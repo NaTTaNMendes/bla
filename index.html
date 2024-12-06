@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern E-commerce</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="container" id="mainContent">
+      <header>
+        <h1>Produtos</h1>
+      </header>
+
+      <div class="product-grid" id="productGrid">
+        <!-- Products will be inserted here by JavaScript -->
+      </div>
+    </div>
+
+    <div id="logPanel" class="log-panel">
+      <h3>Operation Logs</h3>
+      <div id="logContent"></div>
+    </div>
+
+    <button onclick="addUser()">ADICIONAR USUARIO PADRAO</button><br>
+    <button onclick="getAllCarts()">LISTAR TODOS OS CARRINHOS</button><br>
+
+    <!-- Campo para o ID do Usuário -->
+    <label for="userIdInput">ID do Usuário:</label>
+    <input type="text" id="userIdInput" placeholder="Digite o ID do usuário">
+    <button onclick="getUserCartFromInput()">COLETAR DADOS DO USUÁRIO ESPECÍFICO</button><br>
+
+    <!-- Campo para o ID do Carrinho -->
+    <label for="cartIdInput">ID do Carrinho:</label>
+    <input type="text" id="cartIdInput" placeholder="Digite o ID do carrinho">
+    <button onclick="getCartTotalFromInput()">PEGAR TOTAL DE UM CARRINHO</button><br>
+
+    <!-- Campo para ID do Carrinho e Item para Atualizar Quantidade -->
+    <label for="updateCartInput">ID do Carrinho para Atualizar Quantidade:</label>
+    <input type="text" id="updateCartInput" placeholder="Digite o ID do carrinho">
+    <button onclick="atualizarQuantidadeCompraFromInput()">ATUALIZAR UM CARRINHO</button><br>
+
+    <button onclick="deleteEmptyCarts()">DELETAR CARRINHOS VAZIOS</button>
+
+    <!-- Importar o arquivo JavaScript -->
+    <script type="module" src="banco.js"></script>
+    <script>
+      // Função para pegar os dados do carrinho do usuário
+      function getUserCartFromInput() {
+        const userId = document.getElementById('userIdInput').value;
+        if (userId) {
+          getUserCart(userId);  // Passa o ID do usuário para a função
+        } else {
+          alert("Por favor, insira um ID de usuário válido.");
+        }
+      }
+
+      // Função para pegar o total do carrinho
+      function getCartTotalFromInput() {
+        const cartId = document.getElementById('cartIdInput').value;
+        if (cartId) {
+          getCartTotal(cartId);  // Passa o ID do carrinho para a função
+        } else {
+          alert("Por favor, insira um ID de carrinho válido.");
+        }
+      }
+
+      // Função para atualizar a quantidade de um item no carrinho
+      function atualizarQuantidadeCompraFromInput() {
+        const cartId = document.getElementById('updateCartInput').value;
+        const itemId = prompt("Digite o ID do item que deseja atualizar:");
+        const newQuantity = prompt("Digite a nova quantidade:");
+
+        if (cartId && itemId && newQuantity) {
+          atualizarQuantidadeCompra(cartId, itemId, newQuantity);  // Passa os valores para a função
+        } else {
+          alert("Por favor, insira todos os dados necessários.");
+        }
+      }
+    </script>
+  </body>
+</html>
