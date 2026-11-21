@@ -1,37 +1,59 @@
 import { corDaTemperatura, textoSobre, gradienteCss } from './cores.js';
-import { CATEGORIAS, MAX, MARCADOR } from './categorias.js';
+import { CATEGORIAS, MAX } from './categorias.js';
+import { NTFY, TOPICO } from './config.js';
+import { dadosVazios, novaIdentidade, idDoVotante, assinar, aplicarMensagens, buscarMensagens, enviar } from './logica.js';
 
-let dados = { repositorio: '', pessoas: [], votos: {} };
+let dados = dadosVazios();
 let pessoas = []; // pessoas com médias calculadas
+let eu = null; // id anônimo deste navegador
+let identidade = null;
 let aba = 'mapa';
 let ordenacao = 'quente'; // mapa: quente | frio | nome
 let filtroRanking = 'quente'; // ranking: quente | frio | id de categoria
 
-// Lembra o último voto enviado deste navegador, para já abrir os sliders preenchidos.
-const CHAVE_MEUS = 'mapa-de-calor:meus-votos';
-const meusVotos = JSON.parse(localStorage.getItem(CHAVE_MEUS) || '{}');
+// ---------- Identidade anônima (fica só neste navegador) ----------
+
+const CHAVE_IDENTIDADE = 'mapa-de-calor:identidade';
+
+async function carregarIdentidade() {
+  try {
+    identidade = JSON.parse(localStorage.getItem(CHAVE_IDENTIDADE));
+  } catch {}
+  if (!identidade?.privada) {
+    identidade = await novaIdentidade();
+    try {
+      localStorage.setItem(CHAVE_IDENTIDADE, JSON.stringify(identidade));
+    } catch {}
+  }
+  eu = await idDoVotante(identidade.publica);
+}
 
 // ---------- Dados ----------
 
+/** Dados consolidados (dados.json) + pedidos que ainda estão só no ntfy. */
 async function recarregar() {
   const r = await fetch(`dados.json?t=${Date.now()}`, { cache: 'no-store' });
   if (!r.ok) throw new Error('Não consegui carregar os dados.');
-  dados = await r.json();
+  const novos = await r.json();
+  try {
+    await aplicarMensagens(novos, await buscarMensagens(NTFY, TOPICO, novos.ultimo));
+  } catch (e) {
+    console.warn('Votos recentes indisponíveis:', e);
+  }
+  dados = novos;
   pessoas = dados.pessoas.map((p) => {
     const votos = Object.values(dados.votos[p.id] || {});
     const medias = {};
     for (const voto of votos) for (const [cat, v] of Object.entries(voto)) medias[cat] = (medias[cat] || 0) + v;
     for (const cat in medias) medias[cat] = Math.round((medias[cat] / votos.length) * 10) / 10;
-    return { ...p, votantes: votos.length, medias, t: temperatura(medias) };
+    return { ...p, votantes: votos.length, medias, t: temperatura(medias), meuVoto: dados.votos[p.id]?.[eu] || {} };
   });
   render();
 }
 
-/** Abre uma issue pronta no GitHub; o Actions processa o pedido que vai no bloco JSON. */
-function abrirIssue(titulo, texto, pedido) {
-  const corpo = `${texto}\n\nÉ só confirmar criando a issue. O robô registra e fecha em cerca de 1 minuto.\n\n${MARCADOR}\n\`\`\`json\n${JSON.stringify(pedido)}\n\`\`\`\n`;
-  const url = `https://github.com/${dados.repositorio}/issues/new?${new URLSearchParams({ title: titulo, body: corpo })}`;
-  window.open(url, '_blank', 'noopener');
+async function pedir(pedido) {
+  await enviar(NTFY, TOPICO, await assinar(identidade, pedido));
+  await recarregar();
 }
 
 // ---------- Cálculo ----------
@@ -74,6 +96,16 @@ function el(tag, props = {}, ...filhos) {
   }
   e.append(...filhos.filter((f) => f != null));
   return e;
+}
+
+let avisoTimer;
+function avisar(msg, erro = false) {
+  const a = $('#status');
+  a.textContent = msg;
+  a.classList.toggle('erro', erro);
+  a.hidden = false;
+  clearTimeout(avisoTimer);
+  avisoTimer = setTimeout(() => (a.hidden = true), 4000);
 }
 
 function render() {
@@ -119,10 +151,11 @@ function renderMapa() {
   const linhas = lista.map((p) => {
     const total = el('td', { class: 'total', textContent: fmt(p.t) });
     pintar(total, p.t);
+    const votei = Object.keys(p.meuVoto).length > 0;
     return el(
       'tr',
       { class: 'linha', title: 'Clique para votar', onclick: () => abrirVoto(p.id) },
-      el('td', { class: 'nome', textContent: p.nome }),
+      el('td', { class: 'nome' }, p.nome, votei ? el('span', { class: 'votei', textContent: ' •', title: 'Você votou' }) : null),
       ...CATEGORIAS.map((c) => {
         const v = p.medias[c.id] || 0;
         const td = el('td', { class: v ? 'cel' : 'cel zero', textContent: v ? num(v) : '', title: `${p.nome} · ${c.nome}: ${num(v)}` });
@@ -201,11 +234,12 @@ let rascunho = {};
 function abrirVoto(id) {
   votando = pessoas.find((p) => p.id === id);
   if (!votando) return;
-  rascunho = { ...(meusVotos[id] || {}) };
+  rascunho = { ...votando.meuVoto };
   $('#voto-nome').textContent = votando.nome;
   $('#voto-info').textContent = votando.votantes
-    ? `Média do grupo: ${fmt(votando.t)}° com ${plural(votando.votantes, 'voto', 'votos')} · adicionado por @${votando.criadoPor}`
-    : `Ninguém votou ainda — seja o primeiro. · adicionado por @${votando.criadoPor}`;
+    ? `Média do grupo: ${fmt(votando.t)}° com ${plural(votando.votantes, 'voto', 'votos')}`
+    : 'Ninguém votou ainda — seja o primeiro.';
+  $('#btn-remover').hidden = votando.criador !== eu;
 
   $('#voto-sliders').replaceChildren(
     ...CATEGORIAS.map((c) => {
@@ -249,24 +283,32 @@ function mostrarResumo() {
   pintar(span, t);
 }
 
-$('#form-voto').addEventListener('submit', () => {
-  const notas = { ...rascunho };
-  const linhas = CATEGORIAS.filter((c) => notas[c.id]).map((c) => `| ${c.emoji} ${c.nome} | ${notas[c.id]} |`);
-  const texto = linhas.length
-    ? `Voto em **${votando.nome}**\n\n| Categoria | Nota |\n|---|---|\n${linhas.join('\n')}`
-    : `Apagar meu voto em **${votando.nome}**`;
-  abrirIssue(`Voto: ${votando.nome}`, texto, { tipo: 'voto', pessoa: votando.id, notas });
-  meusVotos[votando.id] = notas;
-  localStorage.setItem(CHAVE_MEUS, JSON.stringify(meusVotos));
+async function comBotao(botao, acao) {
+  botao.disabled = true;
+  try {
+    await acao();
+  } catch (e) {
+    avisar(`Não deu certo: ${e.message}`, true);
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+$('#form-voto').addEventListener('submit', (ev) => {
+  ev.preventDefault();
+  comBotao(ev.submitter || $('#form-voto .btn'), async () => {
+    await pedir({ tipo: 'voto', pessoa: votando.id, notas: { ...rascunho } });
+    dialogoVoto.close();
+    avisar('Voto registrado ✓');
+  });
 });
 
-$('#btn-remover').addEventListener('click', () => {
-  abrirIssue(
-    `Remover: ${votando.nome}`,
-    `Remover **${votando.nome}** do mapa (só funciona para quem adicionou, @${votando.criadoPor}, ou para o dono do repositório).`,
-    { tipo: 'remover', pessoa: votando.id },
-  );
-  dialogoVoto.close();
+$('#btn-remover').addEventListener('click', (ev) => {
+  comBotao(ev.target, async () => {
+    await pedir({ tipo: 'remover', pessoa: votando.id });
+    dialogoVoto.close();
+    avisar(`${votando.nome} foi removido.`);
+  });
 });
 
 for (const b of document.querySelectorAll('[data-fechar]')) b.addEventListener('click', () => b.closest('dialog').close());
@@ -278,11 +320,12 @@ $('#form-pessoas').addEventListener('submit', (ev) => {
   ev.preventDefault();
   const nomes = campoNomes.value.split(/[,;\n]+/).map((s) => s.trim()).filter(Boolean);
   if (!nomes.length) return;
-  let titulo = `Adicionar: ${nomes.join(', ')}`;
-  if (titulo.length > 80) titulo = `Adicionar ${nomes.length} indivíduos`;
-  abrirIssue(titulo, `Adicionar ao mapa:\n\n${nomes.map((n) => `- ${n}`).join('\n')}`, { tipo: 'adicionar', nomes });
-  campoNomes.value = '';
-  campoNomes.rows = 1;
+  comBotao($('#form-pessoas .btn'), async () => {
+    await pedir({ tipo: 'adicionar', nomes: nomes.slice(0, 100) });
+    campoNomes.value = '';
+    campoNomes.rows = 1;
+    avisar(`${plural(nomes.length, 'nome enviado', 'nomes enviados')} ✓`);
+  });
 });
 // Enter adiciona; Shift+Enter quebra linha. O campo cresce ao colar uma lista.
 campoNomes.addEventListener('keydown', (ev) => {
@@ -304,9 +347,11 @@ for (const b of document.querySelectorAll('.aba')) {
   });
 }
 
-// Busca os dados de novo de tempos em tempos para mostrar votos novos.
-setInterval(() => !document.hidden && !dialogoVoto.open && recarregar().catch(() => {}), 30_000);
+// Busca de novo de tempos em tempos para mostrar os votos dos outros.
+setInterval(() => !document.hidden && !dialogoVoto.open && recarregar().catch(() => {}), 15_000);
 window.addEventListener('focus', () => !dialogoVoto.open && recarregar().catch(() => {}));
 
 $('#barra').style.background = gradienteCss();
-recarregar().catch((e) => alert(e.message));
+carregarIdentidade()
+  .then(recarregar)
+  .catch((e) => avisar(e.message, true));

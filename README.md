@@ -1,24 +1,31 @@
 # 🌡️ Mapa de Calor
 
 Mapa de calor colaborativo de indivíduos, do **❄️ amigável** ao **🔥 fedorento**.
-Quem não tem nenhuma classificação fica neutro. Roda 100% no GitHub: site no
-GitHub Pages, contas do GitHub e o GitHub Actions como "servidor".
+Quem não tem nenhuma classificação fica neutro.
 
 - **Mapa**: tabela pessoas × categorias com a média dos votos e a temperatura geral.
 - **Ranking**: mais quente, mais frio e o top de cada categoria.
-- **Contribuir**: qualquer pessoa com conta no GitHub adiciona indivíduos (vários de uma
-  vez) e vota. Só quem adicionou, ou o dono do repositório, pode remover.
+- **Votação anônima**: quem abre o site já pode adicionar indivíduos (vários de uma vez)
+  e votar. Não precisa de conta, e ninguém vê quem votou o quê. O resultado é a média de
+  quem votou.
 
 ## Como funciona
 
-1. No site, os botões **Adicionar** e **Votar pelo GitHub** abrem uma issue já preenchida.
-2. A pessoa confirma criando a issue (logada no GitHub, que é a conta dela).
-3. O workflow `.github/workflows/site.yml` roda `scripts/processar.mjs`, que valida o
-   pedido e grava em `dados.json`. Depois ele comenta, fecha a issue e republica o site.
-4. Em cerca de 1 minuto o mapa atualiza.
+- O site fica no GitHub Pages.
+- Cada navegador gera uma **chave anônima** (guardada só nele) e assina seus pedidos
+  (adicionar, votar, remover). Assim cada pessoa tem um voto por indivíduo, pode mudar
+  o próprio voto, e ninguém consegue alterar o voto de outra pessoa.
+- Os pedidos vão para um tópico público do [ntfy.sh](https://ntfy.sh), um serviço gratuito
+  de mensagens que não pede cadastro (veja `config.js`). O site junta esses pedidos aos
+  dados salvos e mostra o voto na hora.
+- A cada ~10 minutos o GitHub Actions (`.github/workflows/site.yml`) roda
+  `scripts/consolidar.mjs`, que grava os pedidos novos em `dados.json` (o ntfy só guarda
+  12 horas) e republica o site.
+- As regras ficam em `logica.js`, usadas tanto pelo site quanto pelo Actions.
+- Só quem adicionou um indivíduo (no mesmo navegador) pode removê-lo.
 
-Cada pessoa tem um voto por indivíduo. Votar de novo substitui o voto anterior, e votar
-tudo em 0 apaga o voto. Os votos ficam públicos nas issues e no `dados.json`.
+Limite da votação sem conta: quem limpar os dados do navegador ou usar outro aparelho
+vota como uma pessoa nova.
 
 ## Categorias
 
@@ -41,10 +48,9 @@ média das temperaturas das categorias, ponderada pelas notas e escalada pela ma
 
 ## Configuração (uma vez só)
 
-1. O repositório precisa ser **público**. O GitHub Pages em repositório privado exige plano
-   pago, e só quem tem acesso ao repositório consegue abrir issues.
-2. Em **Settings → Pages → Build and deployment → Source**, escolha **GitHub Actions**.
-3. Faça um push no `master` (ou rode **Actions → Mapa de Calor → Run workflow**).
+1. Repositório público e **Settings → Pages** publicando o `master` (pela raiz ou pelo
+   GitHub Actions, os dois modos funcionam).
+2. Pronto. O workflow roda sozinho a cada push e a cada 10 minutos.
 
 O site fica em `https://<usuário>.github.io/<repositório>/`.
 

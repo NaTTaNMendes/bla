@@ -27,10 +27,7 @@
         ></textarea>
         <button class="btn" type="submit">Adicionar</button>
       </form>
-      <p class="aviso">
-        Para adicionar e votar você usa sua conta do GitHub: o botão abre uma issue pronta, é só confirmar.
-        Aparece aqui em cerca de 1 minuto.
-      </p>
+      <p class="aviso">Votação anônima: não precisa de conta e ninguém vê quem votou o quê.</p>
 
       <div class="legenda">
         <span>Frio · amigável</span>
@@ -60,13 +57,15 @@
         <div id="voto-sliders" class="sliders"></div>
         <p class="resumo">Seu voto <span id="voto-temp" class="temp">0</span></p>
         <div class="acoes">
-          <button type="button" id="btn-remover" class="link perigo">Pedir remoção</button>
+          <button type="button" id="btn-remover" class="link perigo" hidden>Remover indivíduo</button>
           <span class="espaco"></span>
           <button type="button" class="link" data-fechar>Cancelar</button>
-          <button type="submit" class="btn">Votar pelo GitHub</button>
+          <button type="submit" class="btn">Salvar voto</button>
         </div>
       </form>
     </dialog>
+
+    <p id="status" class="status" role="status" hidden></p>
 
     <script type="module" src="app.js"></script>
   </body>

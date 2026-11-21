@@ -207,3 +207,23 @@ input[type="range"] { padding: 0; border: none; accent-color: var(--acento); }
   .ranking li { grid-template-columns: 2rem 1fr 3.5rem; }
   .rank-trilho { display: none; }
 }
+
+.btn:disabled { opacity: 0.5; cursor: wait; }
+[hidden] { display: none !important; }
+
+/* Aviso flutuante */
+.status {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  margin: 0;
+  background: var(--texto);
+  color: #fff;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+.status.erro { background: #dc2626; }

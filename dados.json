@@ -1,5 +1,182 @@
 {
-  "repositorio": "NaTTaNMendes/bla",
-  "pessoas": [],
-  "votos": {}
+  "pessoas": [
+    {
+      "id": "14f4b5d9",
+      "nome": "Guigo",
+      "criador": null
+    },
+    {
+      "id": "991aaf8a",
+      "nome": "Krieger",
+      "criador": null
+    },
+    {
+      "id": "516af59a",
+      "nome": "Cesar",
+      "criador": null
+    },
+    {
+      "id": "d303d941",
+      "nome": "Alisson",
+      "criador": null
+    },
+    {
+      "id": "85f42776",
+      "nome": "Ítalo",
+      "criador": null
+    },
+    {
+      "id": "39b34d16",
+      "nome": "Bene",
+      "criador": null
+    },
+    {
+      "id": "374b2d1d",
+      "nome": "Nattan",
+      "criador": null
+    },
+    {
+      "id": "b6f52bb7",
+      "nome": "Marcos",
+      "criador": null
+    },
+    {
+      "id": "09be811b",
+      "nome": "Venske",
+      "criador": null
+    },
+    {
+      "id": "119a3ff7",
+      "nome": "Johann Careca",
+      "criador": null
+    },
+    {
+      "id": "14dc3b62",
+      "nome": "Johann",
+      "criador": null
+    },
+    {
+      "id": "8bcda882",
+      "nome": "Ariel",
+      "criador": null
+    },
+    {
+      "id": "0280bd1a",
+      "nome": "Mark",
+      "criador": null
+    },
+    {
+      "id": "4f6dc2f6",
+      "nome": "Burgonovo",
+      "criador": null
+    },
+    {
+      "id": "570e2541",
+      "nome": "Haulbold",
+      "criador": null
+    },
+    {
+      "id": "75ec9530",
+      "nome": "Laércio",
+      "criador": null
+    },
+    {
+      "id": "e16c87f5",
+      "nome": "Lincoln",
+      "criador": null
+    },
+    {
+      "id": "0181a37d",
+      "nome": "Adriano",
+      "criador": null
+    },
+    {
+      "id": "016c7a36",
+      "nome": "Bruno s",
+      "criador": null
+    },
+    {
+      "id": "e9d2cfd6",
+      "nome": "Otto",
+      "criador": null
+    },
+    {
+      "id": "b1bd34c5",
+      "nome": "Pedro c",
+      "criador": null
+    },
+    {
+      "id": "9b1295d1",
+      "nome": "Minati irmão",
+      "criador": null
+    },
+    {
+      "id": "f37c69c9",
+      "nome": "mirai",
+      "criador": null
+    },
+    {
+      "id": "9fbc163b",
+      "nome": "augusto",
+      "criador": null
+    },
+    {
+      "id": "226bacde",
+      "nome": "quinhonho",
+      "criador": null
+    },
+    {
+      "id": "65a16a8b",
+      "nome": "Mateus ruim",
+      "criador": null
+    },
+    {
+      "id": "8c49a81b",
+      "nome": "João krap",
+      "criador": null
+    },
+    {
+      "id": "afca9837",
+      "nome": "Pedro b",
+      "criador": null
+    },
+    {
+      "id": "decec8ef",
+      "nome": "Pedro n",
+      "criador": null
+    },
+    {
+      "id": "049afa2c",
+      "nome": "Daniel",
+      "criador": null
+    },
+    {
+      "id": "629dbcdb",
+      "nome": "Marlon",
+      "criador": null
+    },
+    {
+      "id": "d0af3efe",
+      "nome": "Rodrigo Vieira",
+      "criador": null
+    },
+    {
+      "id": "41c80fc3",
+      "nome": "Gabu",
+      "criador": null
+    },
+    {
+      "id": "eebbe458",
+      "nome": "Pedro capacete",
+      "criador": null
+    },
+    {
+      "id": "2a4a0343",
+      "nome": "buma",
+      "criador": null
+    }
+  ],
+  "votos": {},
+  "relogio": {},
+  "ultimo": null
 }
