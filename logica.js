@@ -86,8 +86,9 @@ function aplicar(dados, votante, pedido) {
     if (!pessoa || !pedido.notas || typeof pedido.notas !== 'object') return false;
     const notas = {};
     for (const [cat, v] of Object.entries(pedido.notas)) {
-      if (!IDS.has(cat) || !Number.isInteger(v) || v < 0 || v > MAX) return false;
-      if (v > 0) notas[cat] = v;
+      if (!IDS.has(cat)) continue; // categoria que não existe mais: ignora
+      if (!Number.isInteger(v) || v < -MAX || v > MAX) return false;
+      if (v !== 0) notas[cat] = v;
     }
     dados.votos[pessoa.id] ||= {};
     if (Object.keys(notas).length) dados.votos[pessoa.id][votante] = notas;

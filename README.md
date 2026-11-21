@@ -29,22 +29,23 @@ vota como uma pessoa nova.
 
 ## Categorias
 
-| Categoria | Temperatura |
-|---|---|
-| 😊 Amigável | −100 |
-| 🎩 Civilizado | −65 |
-| 🤝 Mercador (negociador) | −15 |
-| 😐 Neutro | 0 |
-| 🏆 Competitivo | +25 |
-| 🙄 Chatice | +55 |
-| ☢️ Toxicidade | +80 |
-| 🦨 Fedor | +100 |
+Cada categoria é um eixo com dois lados. A nota vai de −10 a +10, e 0 é neutro.
+
+| Eixo | Lado frio ❄️ | Lado quente 🔥 | Peso |
+|---|---|---|---|
+| Amizade | 😊 Amigável | 😠 Hostil | 100 |
+| Educação | 🎩 Civilizado | 🪓 Bárbaro | 65 |
+| Negócios | 🤝 Mercador | 💸 Caloteiro | 15 |
+| Competição | 😴 Desencanado | 🏆 Competitivo | 25 |
+| Chatice | 😄 Divertido | 🙄 Chato | 55 |
+| Toxicidade | 🌱 Gente boa | ☢️ Tóxico | 80 |
+| Cheiro | 🌸 Cheiroso | 🦨 Fedorento | 100 |
 
 Ficam em `categorias.js`.
 
-A célula do mapa é a média entre quem votou naquele indivíduo. A **temperatura** é a
-média das temperaturas das categorias, ponderada pelas notas e escalada pela maior nota
-(1 de fedor esquenta menos que 10 de fedor).
+A célula do mapa é a média entre quem votou naquele indivíduo. A **temperatura** (−100 a
++100) é a média dos lados votados, ponderada pela força de cada nota e pelo peso do eixo,
+e escalada pela nota mais forte: 1 de fedor esquenta menos que 10 de fedor.
 
 ## Configuração (uma vez só)
 

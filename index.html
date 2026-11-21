@@ -3,48 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
     <title>Mapa de Calor</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="pagina">
-      <header>
-        <h1>Mapa de Calor</h1>
-        <p class="sub">Do amigável ao fedorento. Quem não tem nenhuma classificação fica neutro.</p>
+      <header class="topo">
+        <div>
+          <h1>🌡️ Mapa de Calor</h1>
+          <p class="sub">Vote de forma anônima. O mapa mostra a média de todo mundo.</p>
+        </div>
+        <p id="estatisticas" class="estatisticas"></p>
       </header>
 
-      <nav class="abas">
-        <button class="aba ativa" data-aba="mapa">Mapa</button>
-        <button class="aba" data-aba="ranking">Ranking</button>
-      </nav>
-
-      <form id="form-pessoas" class="adicionar">
-        <textarea
-          id="nomes"
-          rows="1"
-          placeholder="Adicionar indivíduos — vários de uma vez, separados por vírgula ou um por linha"
-          aria-label="Nomes dos indivíduos"
-        ></textarea>
-        <button class="btn" type="submit">Adicionar</button>
-      </form>
-      <p class="aviso">Votação anônima: não precisa de conta e ninguém vê quem votou o quê.</p>
-
-      <div class="legenda">
-        <span>Frio · amigável</span>
+      <div class="barra-wrap">
         <div id="barra" class="barra"></div>
-        <span>Quente · nojento</span>
+        <div class="legenda"><span>❄️ Frio</span><span>Neutro</span><span>Quente 🔥</span></div>
       </div>
 
+      <div class="controles">
+        <nav class="abas">
+          <button class="aba ativa" data-aba="mapa">Mapa</button>
+          <button class="aba" data-aba="ranking">Ranking</button>
+        </nav>
+        <input id="busca" class="busca" type="search" placeholder="Buscar nome" aria-label="Buscar nome" />
+        <button id="btn-adicionar" class="btn">＋ Adicionar</button>
+      </div>
+
+      <form id="form-pessoas" class="adicionar" hidden>
+        <textarea id="nomes" rows="2" placeholder="Um nome por linha, ou separados por vírgula" aria-label="Nomes"></textarea>
+        <div class="adicionar-acoes">
+          <button type="button" class="link" id="btn-cancelar-adicionar">Cancelar</button>
+          <button class="btn" type="submit">Adicionar</button>
+        </div>
+      </form>
+
       <section id="aba-mapa">
-        <p id="vazio" class="vazio" hidden>Ninguém no mapa ainda.</p>
+        <p id="vazio" class="vazio" hidden>Ninguém por aqui.</p>
         <div class="tabela-wrap">
           <table id="mapa" class="mapa"></table>
         </div>
-        <p id="dica" class="dica">Cada célula é a média dos votos · clique numa linha para votar</p>
+        <p id="dica" class="dica">Toque num nome para votar · cada célula é a média dos votos</p>
       </section>
 
       <section id="aba-ranking" hidden>
         <div id="filtros" class="filtros"></div>
+        <div id="lados" class="lados" hidden></div>
         <ol id="ranking" class="ranking"></ol>
         <p id="ranking-vazio" class="vazio" hidden>Ninguém pontuou aqui ainda.</p>
       </section>
@@ -52,12 +57,18 @@
 
     <dialog id="dialogo-voto" class="dialogo">
       <form method="dialog" id="form-voto">
-        <h2 id="voto-nome"></h2>
-        <p id="voto-info" class="info"></p>
+        <div class="dialogo-cab">
+          <div>
+            <h2 id="voto-nome"></h2>
+            <p id="voto-info" class="info"></p>
+          </div>
+          <span id="voto-temp" class="temp grande">0</span>
+        </div>
+        <p class="info">Arraste para o lado que combina. No meio é neutro.</p>
         <div id="voto-sliders" class="sliders"></div>
-        <p class="resumo">Seu voto <span id="voto-temp" class="temp">0</span></p>
         <div class="acoes">
-          <button type="button" id="btn-remover" class="link perigo" hidden>Remover indivíduo</button>
+          <button type="button" id="btn-remover" class="link perigo" hidden>Remover</button>
+          <button type="button" id="btn-zerar" class="link">Zerar</button>
           <span class="espaco"></span>
           <button type="button" class="link" data-fechar>Cancelar</button>
           <button type="submit" class="btn">Salvar voto</button>
