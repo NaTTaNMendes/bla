@@ -201,6 +201,14 @@
         "chatice": 8,
         "competitivo": 5,
         "mercador": 1
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 5,
+        "civilizado": -5,
+        "competitivo": -10,
+        "chatice": 10,
+        "fedor": 10,
+        "toxicidade": -5
       }
     },
     "4f6dc2f6": {
@@ -231,6 +239,15 @@
         "toxicidade": 9,
         "civilizado": 7,
         "amigavel": 9
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 8,
+        "civilizado": -8,
+        "mercador": 5,
+        "competitivo": -7,
+        "chatice": 6,
+        "toxicidade": -6,
+        "fedor": 8
       }
     },
     "nato": {
@@ -301,6 +318,14 @@
         "chatice": 8,
         "toxicidade": 9,
         "fedor": 2
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 3,
+        "civilizado": 7,
+        "mercador": -6,
+        "competitivo": 4,
+        "chatice": 6,
+        "toxicidade": 6
       }
     },
     "39b34d16": {
@@ -311,6 +336,14 @@
         "competitivo": 7,
         "chatice": 6,
         "toxicidade": 5
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 8,
+        "civilizado": 7,
+        "mercador": 5,
+        "competitivo": -5,
+        "chatice": -4,
+        "toxicidade": -8
       }
     },
     "65a16a8b": {
@@ -331,6 +364,14 @@
         "chatice": 5,
         "toxicidade": 9,
         "mercador": 4
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 7,
+        "civilizado": 10,
+        "competitivo": -7,
+        "chatice": -10,
+        "toxicidade": -7,
+        "fedor": -7
       }
     },
     "d303d941": {
@@ -341,6 +382,15 @@
         "competitivo": 6,
         "chatice": 4,
         "toxicidade": 4
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 9,
+        "civilizado": 7,
+        "mercador": 4,
+        "competitivo": -6,
+        "chatice": -5,
+        "toxicidade": -6,
+        "fedor": 3
       }
     },
     "14f4b5d9": {
@@ -351,6 +401,14 @@
         "competitivo": 6,
         "chatice": 2,
         "fedor": 3
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 10,
+        "civilizado": 10,
+        "mercador": 6,
+        "chatice": -9,
+        "toxicidade": -10,
+        "fedor": 4
       }
     },
     "119a3ff7": {
@@ -361,6 +419,14 @@
         "competitivo": 2,
         "chatice": 4,
         "fedor": 1
+      },
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 6,
+        "civilizado": 6,
+        "competitivo": -9,
+        "chatice": -6,
+        "toxicidade": -9,
+        "fedor": -7
       }
     },
     "9fbc163b": {
@@ -371,10 +437,22 @@
         "competitivo": 2
       }
     },
-    "8c49a81b": {}
+    "8c49a81b": {},
+    "09be811b": {
+      "m_kLE9s13LwxAqLi": {
+        "amigavel": 8,
+        "civilizado": 8,
+        "mercador": 7,
+        "competitivo": 6,
+        "chatice": -6,
+        "toxicidade": -10,
+        "fedor": 4
+      }
+    }
   },
   "relogio": {
-    "lgonorjjTpYvveGt": 1795272689189
+    "lgonorjjTpYvveGt": 1795272689189,
+    "m_kLE9s13LwxAqLi": 1795274432209
   },
-  "ultimo": "G8hrwQEnAQ7T"
+  "ultimo": "sn7NGobjlKaP"
 }
