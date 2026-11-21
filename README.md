@@ -14,7 +14,7 @@ GitHub Pages, contas do GitHub e o GitHub Actions como "servidor".
 1. No site, os botões **Adicionar** e **Votar pelo GitHub** abrem uma issue já preenchida.
 2. A pessoa confirma criando a issue (logada no GitHub, que é a conta dela).
 3. O workflow `.github/workflows/site.yml` roda `scripts/processar.mjs`, que valida o
-   pedido e grava em `public/dados.json`. Depois ele comenta, fecha a issue e republica o site.
+   pedido e grava em `dados.json`. Depois ele comenta, fecha a issue e republica o site.
 4. Em cerca de 1 minuto o mapa atualiza.
 
 Cada pessoa tem um voto por indivíduo. Votar de novo substitui o voto anterior, e votar
@@ -33,7 +33,7 @@ tudo em 0 apaga o voto. Os votos ficam públicos nas issues e no `dados.json`.
 | ☢️ Toxicidade | +80 |
 | 🦨 Fedor | +100 |
 
-Ficam em `public/categorias.js`.
+Ficam em `categorias.js`.
 
 A célula do mapa é a média entre quem votou naquele indivíduo. A **temperatura** é a
 média das temperaturas das categorias, ponderada pelas notas e escalada pela maior nota

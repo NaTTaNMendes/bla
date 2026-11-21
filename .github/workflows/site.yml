@@ -1,7 +1,7 @@
 name: Mapa de Calor
 
 # Cada voto/cadastro feito pelo site vira uma issue. Este workflow registra o pedido
-# em public/dados.json, responde e fecha a issue, e publica o site no GitHub Pages.
+# em dados.json, responde e fecha a issue, e publica o site no GitHub Pages.
 on:
   issues:
     types: [opened]
@@ -68,6 +68,6 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: .
       - id: deploy
         uses: actions/deploy-pages@v4

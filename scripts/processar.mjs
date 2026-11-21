@@ -1,11 +1,11 @@
-// Processa uma issue aberta pelo site (voto, adicionar ou remover) e atualiza public/dados.json.
+// Processa uma issue aberta pelo site (voto, adicionar ou remover) e atualiza dados.json.
 // Lê o evento do GitHub em GITHUB_EVENT_PATH e escreve a resposta (markdown) no stdout.
 // Nunca lança erro: problemas viram uma resposta explicando o que houve.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
-import { CATEGORIAS, MAX, MARCADOR } from '../public/categorias.js';
+import { CATEGORIAS, MAX, MARCADOR } from '../categorias.js';
 
-const ARQUIVO = new URL('../public/dados.json', import.meta.url);
+const ARQUIVO = new URL('../dados.json', import.meta.url);
 const IDS = new Set(CATEGORIAS.map((c) => c.id));
 
 class Recusa extends Error {}
