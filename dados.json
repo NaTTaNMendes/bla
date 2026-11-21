@@ -189,18 +189,28 @@
       "id": "luiz-gazola",
       "nome": "luiz gazola",
       "criador": "lgonorjjTpYvveGt"
+    },
+    {
+      "id": "minatti",
+      "nome": "minatti",
+      "criador": "lgonorjjTpYvveGt"
+    },
+    {
+      "id": "ricardinho",
+      "nome": "ricardinho",
+      "criador": "lgonorjjTpYvveGt"
     }
   ],
   "votos": {
     "991aaf8a": {
       "lgonorjjTpYvveGt": {
         "amigavel": 6,
-        "civilizado": 4,
         "fedor": 10,
-        "toxicidade": 7,
+        "toxicidade": 6,
         "chatice": 8,
-        "competitivo": 5,
-        "mercador": 1
+        "civilizado": -4,
+        "mercador": -6,
+        "competitivo": -4
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 5,
@@ -209,36 +219,56 @@
         "chatice": 10,
         "fedor": 10,
         "toxicidade": -5
+      },
+      "dUIclM5I0g4hp_kO": {
+        "amigavel": 8,
+        "civilizado": 2,
+        "mercador": -2,
+        "competitivo": -5,
+        "chatice": 1,
+        "toxicidade": -4,
+        "fedor": 10
       }
     },
     "4f6dc2f6": {
       "lgonorjjTpYvveGt": {
         "amigavel": 5,
-        "competitivo": 4,
+        "competitivo": 2,
         "chatice": 10,
-        "toxicidade": 8,
+        "toxicidade": 6,
         "fedor": 10,
-        "mercador": 2,
-        "civilizado": 3
+        "mercador": 4,
+        "civilizado": 2
+      },
+      "dUIclM5I0g4hp_kO": {
+        "amigavel": 6,
+        "civilizado": 2,
+        "competitivo": -6,
+        "chatice": 10,
+        "toxicidade": 4,
+        "fedor": 10
       }
     },
     "629dbcdb": {
       "lgonorjjTpYvveGt": {
         "amigavel": 5,
-        "civilizado": 6,
-        "mercador": 1,
-        "competitivo": 1,
+        "civilizado": 7,
         "chatice": 10,
-        "toxicidade": 6
+        "fedor": -4,
+        "toxicidade": -6,
+        "mercador": -8,
+        "competitivo": -8
       }
     },
     "0280bd1a": {
       "lgonorjjTpYvveGt": {
-        "fedor": 2,
         "chatice": 4,
-        "toxicidade": 9,
-        "civilizado": 7,
-        "amigavel": 9
+        "civilizado": 6,
+        "amigavel": 9,
+        "mercador": 2,
+        "competitivo": -10,
+        "toxicidade": -4,
+        "fedor": 1
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 8,
@@ -252,33 +282,57 @@
     },
     "nato": {
       "lgonorjjTpYvveGt": {
-        "amigavel": 2,
-        "civilizado": 4,
+        "civilizado": 2,
         "competitivo": 6,
         "chatice": 10,
         "toxicidade": 10,
-        "fedor": 5
+        "fedor": 5,
+        "amigavel": -5
+      },
+      "dUIclM5I0g4hp_kO": {
+        "civilizado": 6,
+        "amigavel": -2,
+        "competitivo": 6,
+        "chatice": 10,
+        "toxicidade": 5,
+        "fedor": 2
       }
     },
     "guilherme": {
       "lgonorjjTpYvveGt": {
-        "amigavel": 3,
+        "amigavel": 2,
         "civilizado": 6,
-        "mercador": 6,
+        "mercador": 4,
         "competitivo": 10,
         "chatice": 8,
         "toxicidade": 10
+      },
+      "dUIclM5I0g4hp_kO": {
+        "amigavel": 4,
+        "civilizado": 2,
+        "mercador": -10,
+        "competitivo": -2,
+        "chatice": 4,
+        "toxicidade": 2
       }
     },
     "luiz-gazola": {
       "lgonorjjTpYvveGt": {
         "chatice": 10,
-        "fedor": 4,
-        "toxicidade": 7,
+        "fedor": 2,
+        "toxicidade": 6,
         "competitivo": 8,
-        "mercador": 2,
+        "amigavel": -1,
         "civilizado": 6,
-        "amigavel": 4
+        "mercador": -8
+      },
+      "dUIclM5I0g4hp_kO": {
+        "amigavel": -6,
+        "civilizado": -6,
+        "mercador": -10,
+        "competitivo": 8,
+        "chatice": 6,
+        "toxicidade": 6
       }
     },
     "016c7a36": {
@@ -286,38 +340,40 @@
         "amigavel": 6,
         "civilizado": 10,
         "mercador": 8,
-        "toxicidade": 2,
-        "competitivo": 10
+        "competitivo": 8,
+        "chatice": -4,
+        "toxicidade": -7,
+        "fedor": -4
       }
     },
     "226bacde": {
       "lgonorjjTpYvveGt": {
-        "chatice": 9,
-        "toxicidade": 7,
-        "fedor": 5,
-        "competitivo": 3,
+        "chatice": 10,
+        "toxicidade": 6,
+        "fedor": 2,
+        "competitivo": 2,
         "civilizado": 5,
-        "amigavel": 4
+        "amigavel": 2
       }
     },
     "eebbe458": {
       "lgonorjjTpYvveGt": {
-        "toxicidade": 7,
-        "chatice": 8,
-        "competitivo": 9,
+        "toxicidade": 5,
+        "chatice": 4,
+        "competitivo": 8,
         "civilizado": 6,
-        "amigavel": 4
+        "amigavel": -1
       }
     },
     "b6f52bb7": {
       "lgonorjjTpYvveGt": {
-        "amigavel": 4,
-        "civilizado": 4,
-        "mercador": 5,
+        "civilizado": 2,
+        "mercador": -4,
         "competitivo": 8,
         "chatice": 8,
         "toxicidade": 9,
-        "fedor": 2
+        "fedor": 2,
+        "amigavel": -4
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 3,
@@ -326,16 +382,24 @@
         "competitivo": 4,
         "chatice": 6,
         "toxicidade": 6
+      },
+      "dUIclM5I0g4hp_kO": {
+        "amigavel": 2,
+        "civilizado": -4,
+        "mercador": -8,
+        "competitivo": -10,
+        "chatice": 6,
+        "toxicidade": 2
       }
     },
     "39b34d16": {
       "lgonorjjTpYvveGt": {
         "amigavel": 7,
         "civilizado": 8,
-        "mercador": 6,
-        "competitivo": 7,
-        "chatice": 6,
-        "toxicidade": 5
+        "toxicidade": -10,
+        "chatice": -9,
+        "competitivo": -6,
+        "fedor": -2
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 8,
@@ -348,28 +412,35 @@
     },
     "65a16a8b": {
       "lgonorjjTpYvveGt": {
-        "amigavel": 4,
+        "amigavel": 3,
         "chatice": 8,
-        "toxicidade": 7,
+        "toxicidade": 6,
         "competitivo": 10,
-        "mercador": 2,
-        "civilizado": 6
+        "civilizado": 5
+      },
+      "dUIclM5I0g4hp_kO": {
+        "amigavel": 2,
+        "civilizado": -6,
+        "competitivo": 6,
+        "chatice": 2,
+        "toxicidade": 2
       }
     },
     "516af59a": {
       "lgonorjjTpYvveGt": {
         "amigavel": 7,
-        "civilizado": 8,
-        "competitivo": 8,
-        "chatice": 5,
+        "civilizado": 7,
+        "competitivo": 4,
+        "mercador": 1,
+        "chatice": -7,
         "toxicidade": 9,
-        "mercador": 4
+        "fedor": -5
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 7,
-        "civilizado": 10,
-        "competitivo": -7,
-        "chatice": -10,
+        "civilizado": 8,
+        "competitivo": -4,
+        "chatice": -8,
         "toxicidade": -7,
         "fedor": -7
       }
@@ -379,9 +450,9 @@
         "amigavel": 6,
         "civilizado": 8,
         "mercador": 8,
-        "competitivo": 6,
-        "chatice": 4,
-        "toxicidade": 4
+        "chatice": -10,
+        "toxicidade": -6,
+        "competitivo": -5
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 9,
@@ -397,10 +468,11 @@
       "lgonorjjTpYvveGt": {
         "amigavel": 9,
         "civilizado": 8,
-        "mercador": 5,
-        "competitivo": 6,
-        "chatice": 2,
-        "fedor": 3
+        "mercador": 4,
+        "fedor": 3,
+        "toxicidade": -10,
+        "chatice": -8,
+        "competitivo": 2
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 10,
@@ -413,12 +485,12 @@
     },
     "119a3ff7": {
       "lgonorjjTpYvveGt": {
-        "amigavel": 5,
+        "amigavel": 4,
         "civilizado": 7,
         "mercador": 7,
-        "competitivo": 2,
-        "chatice": 4,
-        "fedor": 1
+        "competitivo": -8,
+        "toxicidade": -10,
+        "chatice": -4
       },
       "m_kLE9s13LwxAqLi": {
         "amigavel": 6,
@@ -431,10 +503,12 @@
     },
     "9fbc163b": {
       "lgonorjjTpYvveGt": {
-        "amigavel": 8,
-        "civilizado": 8,
+        "amigavel": 9,
+        "civilizado": 9,
         "mercador": 6,
-        "competitivo": 2
+        "chatice": -6,
+        "toxicidade": -10,
+        "competitivo": -8
       }
     },
     "8c49a81b": {},
@@ -447,12 +521,175 @@
         "chatice": -6,
         "toxicidade": -10,
         "fedor": 4
+      },
+      "lgonorjjTpYvveGt": {
+        "amigavel": 4,
+        "civilizado": 7,
+        "mercador": 9,
+        "competitivo": 5,
+        "chatice": -4,
+        "toxicidade": -6
+      }
+    },
+    "374b2d1d": {
+      "lgonorjjTpYvveGt": {
+        "civilizado": 8,
+        "mercador": 2,
+        "competitivo": -10,
+        "chatice": -8,
+        "toxicidade": -10,
+        "fedor": -4
+      }
+    },
+    "85f42776": {
+      "lgonorjjTpYvveGt": {
+        "toxicidade": -8,
+        "chatice": -2,
+        "competitivo": -1,
+        "mercador": 8,
+        "civilizado": 7,
+        "amigavel": 7
+      }
+    },
+    "8bcda882": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": -2,
+        "civilizado": 7,
+        "mercador": 4,
+        "competitivo": 5,
+        "chatice": -6,
+        "toxicidade": -8
+      }
+    },
+    "570e2541": {
+      "lgonorjjTpYvveGt": {
+        "toxicidade": -8,
+        "competitivo": 8,
+        "chatice": -6,
+        "mercador": 7,
+        "civilizado": 8,
+        "amigavel": 7
+      }
+    },
+    "75ec9530": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": -5,
+        "civilizado": 8,
+        "fedor": -4,
+        "toxicidade": 6,
+        "competitivo": 7,
+        "mercador": 10,
+        "chatice": -3
+      }
+    },
+    "b1bd34c5": {
+      "lgonorjjTpYvveGt": {
+        "toxicidade": -9,
+        "chatice": -6,
+        "competitivo": -8,
+        "mercador": 4,
+        "civilizado": 8,
+        "amigavel": 7
+      }
+    },
+    "049afa2c": {
+      "lgonorjjTpYvveGt": {
+        "chatice": 7,
+        "toxicidade": -6,
+        "competitivo": 8,
+        "mercador": -4,
+        "civilizado": 7,
+        "amigavel": 7
+      }
+    },
+    "f37c69c9": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 3,
+        "civilizado": 7,
+        "competitivo": 2,
+        "mercador": 7,
+        "chatice": -9,
+        "toxicidade": -8
+      }
+    },
+    "minatti": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 5,
+        "civilizado": 8,
+        "competitivo": -4,
+        "chatice": -6,
+        "toxicidade": -8
+      }
+    },
+    "9b1295d1": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 5,
+        "civilizado": 7,
+        "competitivo": -4,
+        "chatice": -4,
+        "toxicidade": -5
+      }
+    },
+    "e9d2cfd6": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 7,
+        "civilizado": 8,
+        "competitivo": 5,
+        "chatice": -5,
+        "toxicidade": -8
+      }
+    },
+    "ricardinho": {
+      "lgonorjjTpYvveGt": {
+        "toxicidade": 8,
+        "chatice": 4,
+        "competitivo": 8,
+        "civilizado": 6,
+        "fedor": -2,
+        "amigavel": 4
+      },
+      "dUIclM5I0g4hp_kO": {
+        "amigavel": 4,
+        "civilizado": 2,
+        "mercador": -2,
+        "competitivo": 8,
+        "toxicidade": -2
+      }
+    },
+    "2a4a0343": {
+      "lgonorjjTpYvveGt": {
+        "toxicidade": 7,
+        "competitivo": 7,
+        "civilizado": 6,
+        "amigavel": -4,
+        "chatice": 5
+      }
+    },
+    "41c80fc3": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 4,
+        "civilizado": 5,
+        "mercador": 2,
+        "competitivo": 7,
+        "chatice": -7,
+        "toxicidade": -6
+      }
+    },
+    "14dc3b62": {
+      "lgonorjjTpYvveGt": {
+        "civilizado": 8,
+        "amigavel": 4,
+        "mercador": -2,
+        "competitivo": 8,
+        "chatice": -3,
+        "toxicidade": -6
       }
     }
   },
   "relogio": {
-    "lgonorjjTpYvveGt": 1795272689189,
-    "m_kLE9s13LwxAqLi": 1795274432209
+    "lgonorjjTpYvveGt": 1795278648105,
+    "m_kLE9s13LwxAqLi": 1795274648981,
+    "dUIclM5I0g4hp_kO": 1795278720974
   },
-  "ultimo": "sn7NGobjlKaP"
+  "ultimo": "KFx4Dw25j00t"
 }
