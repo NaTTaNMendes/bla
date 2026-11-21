@@ -1,28 +1,37 @@
 import { corDaTemperatura, textoSobre, gradienteCss } from './cores.js';
+import { CATEGORIAS, MAX, MARCADOR } from './categorias.js';
 
-const MAX = 10;
-
-let estado = { categorias: [], pessoas: [], eu: null, precisaConvite: false };
+let dados = { repositorio: '', pessoas: [], votos: {} };
+let pessoas = []; // pessoas com médias calculadas
 let aba = 'mapa';
 let ordenacao = 'quente'; // mapa: quente | frio | nome
 let filtroRanking = 'quente'; // ranking: quente | frio | id de categoria
 
-// ---------- API ----------
+// Lembra o último voto enviado deste navegador, para já abrir os sliders preenchidos.
+const CHAVE_MEUS = 'mapa-de-calor:meus-votos';
+const meusVotos = JSON.parse(localStorage.getItem(CHAVE_MEUS) || '{}');
 
-async function api(metodo, url, corpo) {
-  const r = await fetch(url, {
-    method: metodo,
-    headers: corpo ? { 'Content-Type': 'application/json' } : {},
-    body: corpo ? JSON.stringify(corpo) : undefined,
-  });
-  const dados = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(dados.erro || 'Algo deu errado.');
-  return dados;
-}
+// ---------- Dados ----------
 
 async function recarregar() {
-  estado = await api('GET', '/api/estado');
+  const r = await fetch(`dados.json?t=${Date.now()}`, { cache: 'no-store' });
+  if (!r.ok) throw new Error('Não consegui carregar os dados.');
+  dados = await r.json();
+  pessoas = dados.pessoas.map((p) => {
+    const votos = Object.values(dados.votos[p.id] || {});
+    const medias = {};
+    for (const voto of votos) for (const [cat, v] of Object.entries(voto)) medias[cat] = (medias[cat] || 0) + v;
+    for (const cat in medias) medias[cat] = Math.round((medias[cat] / votos.length) * 10) / 10;
+    return { ...p, votantes: votos.length, medias, t: temperatura(medias) };
+  });
   render();
+}
+
+/** Abre uma issue pronta no GitHub; o Actions processa o pedido que vai no bloco JSON. */
+function abrirIssue(titulo, texto, pedido) {
+  const corpo = `${texto}\n\nÉ só confirmar criando a issue. O robô registra e fecha em cerca de 1 minuto.\n\n${MARCADOR}\n\`\`\`json\n${JSON.stringify(pedido)}\n\`\`\`\n`;
+  const url = `https://github.com/${dados.repositorio}/issues/new?${new URLSearchParams({ title: titulo, body: corpo })}`;
+  window.open(url, '_blank', 'noopener');
 }
 
 // ---------- Cálculo ----------
@@ -33,7 +42,7 @@ async function recarregar() {
  */
 function temperatura(notas) {
   let peso = 0, soma = 0, maior = 0;
-  for (const c of estado.categorias) {
+  for (const c of CATEGORIAS) {
     const v = notas[c.id] || 0;
     if (!v) continue;
     peso += v;
@@ -45,14 +54,12 @@ function temperatura(notas) {
 
 const fmt = (t) => (Math.round(t) > 0 ? '+' : '') + Math.round(t);
 const num = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.', ','));
+const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
 
 function pintar(el, temp) {
   el.style.background = corDaTemperatura(temp);
   el.style.color = textoSobre(temp);
 }
-
-const categoriasOrdenadas = () => [...estado.categorias].sort((a, b) => a.temp - b.temp);
-const comTemperatura = () => estado.pessoas.map((p) => ({ p, t: temperatura(p.medias) }));
 
 // ---------- DOM ----------
 
@@ -70,15 +77,6 @@ function el(tag, props = {}, ...filhos) {
 }
 
 function render() {
-  const logado = Boolean(estado.eu);
-  $('#conta').replaceChildren(
-    ...(logado
-      ? [el('span', { textContent: estado.eu.usuario }), el('button', { class: 'link', textContent: 'Sair', onclick: sair })]
-      : [el('button', { class: 'link destaque', textContent: 'Entrar', onclick: () => abrirLogin() })]),
-  );
-  $('#form-pessoas').hidden = !logado;
-  $('#convite-entrar').hidden = logado;
-
   for (const b of document.querySelectorAll('.aba')) b.classList.toggle('ativa', b.dataset.aba === aba);
   $('#aba-mapa').hidden = aba !== 'mapa';
   $('#aba-ranking').hidden = aba !== 'ranking';
@@ -88,9 +86,8 @@ function render() {
 
 function renderMapa() {
   const tabela = $('#mapa');
-  const cats = categoriasOrdenadas();
-  const lista = comTemperatura();
-  if (ordenacao === 'nome') lista.sort((a, b) => a.p.nome.localeCompare(b.p.nome, 'pt-BR'));
+  const lista = [...pessoas];
+  if (ordenacao === 'nome') lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
   else if (ordenacao === 'frio') lista.sort((a, b) => a.t - b.t);
   else lista.sort((a, b) => b.t - a.t);
 
@@ -105,11 +102,11 @@ function renderMapa() {
     {},
     el('th', {
       class: 'nome ordenavel',
-      textContent: `${lista.length} ${lista.length === 1 ? 'indivíduo' : 'indivíduos'}${ordenacao === 'nome' ? ' ↓' : ''}`,
+      textContent: plural(lista.length, 'indivíduo', 'indivíduos') + (ordenacao === 'nome' ? ' ↓' : ''),
       title: 'Ordenar por nome',
       onclick: () => ((ordenacao = 'nome'), render()),
     }),
-    ...cats.map((c) => el('th', { title: `${c.nome} (${fmt(c.temp)})` }, el('span', { class: 'emoji', textContent: c.emoji }), c.nome)),
+    ...CATEGORIAS.map((c) => el('th', { title: `${c.nome} (${fmt(c.temp)})` }, el('span', { class: 'emoji', textContent: c.emoji }), c.nome)),
     el('th', {
       class: 'ordenavel',
       textContent: `Temperatura${ordenacao === 'frio' ? ' ↑' : ordenacao === 'quente' ? ' ↓' : ''}`,
@@ -119,15 +116,14 @@ function renderMapa() {
     el('th', { textContent: 'Votos' }),
   );
 
-  const linhas = lista.map(({ p, t }) => {
-    const total = el('td', { class: 'total', textContent: fmt(t) });
-    pintar(total, t);
-    const votei = Object.keys(p.meuVoto).length > 0;
+  const linhas = lista.map((p) => {
+    const total = el('td', { class: 'total', textContent: fmt(p.t) });
+    pintar(total, p.t);
     return el(
       'tr',
-      { class: 'linha', title: estado.eu ? 'Clique para votar' : 'Entre para votar', onclick: () => abrirVoto(p.id) },
-      el('td', { class: 'nome' }, p.nome, votei ? el('span', { class: 'votei', textContent: ' •', title: 'Você votou' }) : null),
-      ...cats.map((c) => {
+      { class: 'linha', title: 'Clique para votar', onclick: () => abrirVoto(p.id) },
+      el('td', { class: 'nome', textContent: p.nome }),
+      ...CATEGORIAS.map((c) => {
         const v = p.medias[c.id] || 0;
         const td = el('td', { class: v ? 'cel' : 'cel zero', textContent: v ? num(v) : '', title: `${p.nome} · ${c.nome}: ${num(v)}` });
         if (v) pintar(td, (c.temp * v) / MAX);
@@ -145,7 +141,7 @@ function renderRanking() {
   const filtros = [
     { id: 'quente', rotulo: '🔥 Mais quente' },
     { id: 'frio', rotulo: '❄️ Mais frio' },
-    ...categoriasOrdenadas().map((c) => ({ id: c.id, rotulo: `${c.emoji} ${c.nome}` })),
+    ...CATEGORIAS.map((c) => ({ id: c.id, rotulo: `${c.emoji} ${c.nome}` })),
   ];
   $('#filtros').replaceChildren(
     ...filtros.map((f) =>
@@ -158,19 +154,21 @@ function renderRanking() {
   );
 
   let itens;
-  const cat = estado.categorias.find((c) => c.id === filtroRanking);
+  const cat = CATEGORIAS.find((c) => c.id === filtroRanking);
   if (cat) {
-    itens = estado.pessoas
-      .map((p) => ({ p, v: p.medias[cat.id] || 0 }))
-      .filter((x) => x.v > 0)
-      .sort((a, b) => b.v - a.v)
-      .map(({ p, v }) => ({ p, valor: num(v), temp: (cat.temp * v) / MAX, largura: v / MAX }));
+    itens = pessoas
+      .filter((p) => p.medias[cat.id] > 0)
+      .sort((a, b) => b.medias[cat.id] - a.medias[cat.id])
+      .map((p) => {
+        const v = p.medias[cat.id];
+        return { p, valor: num(v), temp: (cat.temp * v) / MAX, largura: v / MAX };
+      });
   } else {
     const sinal = filtroRanking === 'frio' ? -1 : 1;
-    itens = comTemperatura()
-      .filter(({ p, t }) => p.votantes > 0 && Math.sign(Math.round(t)) === sinal)
+    itens = pessoas
+      .filter((p) => p.votantes > 0 && Math.sign(Math.round(p.t)) === sinal)
       .sort((a, b) => sinal * (b.t - a.t))
-      .map(({ p, t }) => ({ p, valor: `${fmt(t)}°`, temp: t, largura: Math.abs(t) / 100 }));
+      .map((p) => ({ p, valor: `${fmt(p.t)}°`, temp: p.t, largura: Math.abs(p.t) / 100 }));
   }
 
   $('#ranking-vazio').hidden = itens.length > 0;
@@ -184,9 +182,9 @@ function renderRanking() {
       pintar(pill, temp);
       return el(
         'li',
-        { onclick: () => abrirVoto(p.id), title: estado.eu ? 'Clique para votar' : '' },
+        { onclick: () => abrirVoto(p.id), title: 'Clique para votar' },
         el('span', { class: 'posicao', textContent: medalhas[i] || `${i + 1}º` }),
-        el('span', { class: 'rank-nome' }, p.nome, el('small', { textContent: `${p.votantes} ${p.votantes === 1 ? 'voto' : 'votos'}` })),
+        el('span', { class: 'rank-nome' }, p.nome, el('small', { textContent: plural(p.votantes, 'voto', 'votos') })),
         el('span', { class: 'rank-trilho' }, barra),
         pill,
       );
@@ -201,19 +199,16 @@ let votando = null;
 let rascunho = {};
 
 function abrirVoto(id) {
-  if (!estado.eu) return abrirLogin();
-  votando = estado.pessoas.find((p) => p.id === id);
+  votando = pessoas.find((p) => p.id === id);
   if (!votando) return;
-  rascunho = { ...votando.meuVoto };
+  rascunho = { ...(meusVotos[id] || {}) };
   $('#voto-nome').textContent = votando.nome;
-  const tGrupo = temperatura(votando.medias);
   $('#voto-info').textContent = votando.votantes
-    ? `Média do grupo: ${fmt(tGrupo)}° com ${votando.votantes} ${votando.votantes === 1 ? 'voto' : 'votos'}`
-    : 'Ninguém votou ainda — seja o primeiro.';
-  $('#btn-remover').hidden = votando.criadoPor !== estado.eu.id;
+    ? `Média do grupo: ${fmt(votando.t)}° com ${plural(votando.votantes, 'voto', 'votos')} · adicionado por @${votando.criadoPor}`
+    : `Ninguém votou ainda — seja o primeiro. · adicionado por @${votando.criadoPor}`;
 
   $('#voto-sliders').replaceChildren(
-    ...categoriasOrdenadas().map((c) => {
+    ...CATEGORIAS.map((c) => {
       const saida = el('output');
       const mostrar = () => {
         const v = rascunho[c.id] || 0;
@@ -254,93 +249,40 @@ function mostrarResumo() {
   pintar(span, t);
 }
 
-$('#form-voto').addEventListener('submit', async (ev) => {
-  ev.preventDefault();
-  try {
-    await api('PUT', `/api/votos/${votando.id}`, { notas: rascunho });
-    dialogoVoto.close();
-    await recarregar();
-  } catch (e) {
-    alert(e.message);
-  }
+$('#form-voto').addEventListener('submit', () => {
+  const notas = { ...rascunho };
+  const linhas = CATEGORIAS.filter((c) => notas[c.id]).map((c) => `| ${c.emoji} ${c.nome} | ${notas[c.id]} |`);
+  const texto = linhas.length
+    ? `Voto em **${votando.nome}**\n\n| Categoria | Nota |\n|---|---|\n${linhas.join('\n')}`
+    : `Apagar meu voto em **${votando.nome}**`;
+  abrirIssue(`Voto: ${votando.nome}`, texto, { tipo: 'voto', pessoa: votando.id, notas });
+  meusVotos[votando.id] = notas;
+  localStorage.setItem(CHAVE_MEUS, JSON.stringify(meusVotos));
 });
 
-$('#btn-remover').addEventListener('click', async () => {
-  if (!confirm(`Remover "${votando.nome}" do mapa? Os votos de todo mundo nele serão apagados.`)) return;
-  try {
-    await api('DELETE', `/api/pessoas/${votando.id}`);
-    dialogoVoto.close();
-    await recarregar();
-  } catch (e) {
-    alert(e.message);
-  }
+$('#btn-remover').addEventListener('click', () => {
+  abrirIssue(
+    `Remover: ${votando.nome}`,
+    `Remover **${votando.nome}** do mapa (só funciona para quem adicionou, @${votando.criadoPor}, ou para o dono do repositório).`,
+    { tipo: 'remover', pessoa: votando.id },
+  );
+  dialogoVoto.close();
 });
 
 for (const b of document.querySelectorAll('[data-fechar]')) b.addEventListener('click', () => b.closest('dialog').close());
 
-// ---------- Conta ----------
-
-const dialogoLogin = $('#dialogo-login');
-let criandoConta = false;
-
-function modoLogin(criar) {
-  criandoConta = criar;
-  $('#login-titulo').textContent = criar ? 'Criar conta' : 'Entrar';
-  $('#login-enviar').textContent = criar ? 'Criar conta' : 'Entrar';
-  $('#login-pergunta').textContent = criar ? 'Já tem conta?' : 'Não tem conta?';
-  $('#login-trocar').textContent = criar ? 'Entrar' : 'Criar conta';
-  $('#login-senha').autocomplete = criar ? 'new-password' : 'current-password';
-  $('#login-convite').hidden = !(criar && estado.precisaConvite);
-  $('#login-convite').required = criar && estado.precisaConvite;
-  $('#login-erro').hidden = true;
-}
-
-function abrirLogin(criar = false) {
-  modoLogin(criar);
-  dialogoLogin.showModal();
-  $('#login-usuario').focus();
-}
-
-$('#login-trocar').addEventListener('click', () => modoLogin(!criandoConta));
-for (const b of document.querySelectorAll('[data-abrir-login]')) b.addEventListener('click', () => abrirLogin(true));
-dialogoLogin.addEventListener('click', (ev) => ev.target === dialogoLogin && dialogoLogin.close());
-
-$('#form-login').addEventListener('submit', async (ev) => {
-  ev.preventDefault();
-  try {
-    await api('POST', criandoConta ? '/api/registrar' : '/api/entrar', {
-      usuario: $('#login-usuario').value,
-      senha: $('#login-senha').value,
-      convite: $('#login-convite').value,
-    });
-    dialogoLogin.close();
-    ev.target.reset();
-    await recarregar();
-  } catch (e) {
-    $('#login-erro').textContent = e.message;
-    $('#login-erro').hidden = false;
-  }
-});
-
-async function sair() {
-  await api('POST', '/api/sair');
-  await recarregar();
-}
-
 // ---------- Adicionar ----------
 
 const campoNomes = $('#nomes');
-$('#form-pessoas').addEventListener('submit', async (ev) => {
+$('#form-pessoas').addEventListener('submit', (ev) => {
   ev.preventDefault();
-  if (!campoNomes.value.trim()) return;
-  try {
-    await api('POST', '/api/pessoas', { nomes: campoNomes.value });
-    campoNomes.value = '';
-    campoNomes.rows = 1;
-    await recarregar();
-  } catch (e) {
-    alert(e.message);
-  }
+  const nomes = campoNomes.value.split(/[,;\n]+/).map((s) => s.trim()).filter(Boolean);
+  if (!nomes.length) return;
+  let titulo = `Adicionar: ${nomes.join(', ')}`;
+  if (titulo.length > 80) titulo = `Adicionar ${nomes.length} indivíduos`;
+  abrirIssue(titulo, `Adicionar ao mapa:\n\n${nomes.map((n) => `- ${n}`).join('\n')}`, { tipo: 'adicionar', nomes });
+  campoNomes.value = '';
+  campoNomes.rows = 1;
 });
 // Enter adiciona; Shift+Enter quebra linha. O campo cresce ao colar uma lista.
 campoNomes.addEventListener('keydown', (ev) => {
@@ -362,10 +304,9 @@ for (const b of document.querySelectorAll('.aba')) {
   });
 }
 
-// Mostra votos novos de outras pessoas sem precisar recarregar a página.
-const algumDialogoAberto = () => dialogoVoto.open || dialogoLogin.open;
-setInterval(() => !document.hidden && !algumDialogoAberto() && recarregar().catch(() => {}), 20_000);
-window.addEventListener('focus', () => !algumDialogoAberto() && recarregar().catch(() => {}));
+// Busca os dados de novo de tempos em tempos para mostrar votos novos.
+setInterval(() => !document.hidden && !dialogoVoto.open && recarregar().catch(() => {}), 30_000);
+window.addEventListener('focus', () => !dialogoVoto.open && recarregar().catch(() => {}));
 
 $('#barra').style.background = gradienteCss();
 recarregar().catch((e) => alert(e.message));

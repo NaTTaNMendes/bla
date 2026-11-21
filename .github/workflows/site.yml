@@ -1,0 +1,73 @@
+name: Mapa de Calor
+
+# Cada voto/cadastro feito pelo site vira uma issue. Este workflow registra o pedido
+# em public/dados.json, responde e fecha a issue, e publica o site no GitHub Pages.
+on:
+  issues:
+    types: [opened]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+jobs:
+  processar:
+    if: github.event_name == 'issues' && contains(github.event.issue.body, '<!-- mapa-de-calor -->')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Registrar pedido
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          RESPOSTA="$RUNNER_TEMP/resposta.md"
+          SALVO=nao
+          # Vários pedidos podem chegar ao mesmo tempo: refaz em cima do master mais novo se o push falhar.
+          for tentativa in 1 2 3 4 5 6; do
+            git fetch -q origin master && git reset -q --hard origin/master
+            node scripts/processar.mjs > "$RESPOSTA"
+            if git diff --quiet; then SALVO=sim; break; fi
+            git commit -qam "Mapa de calor: issue #$ISSUE"
+            if git push -q origin HEAD:master; then SALVO=sim; break; fi
+            sleep $((tentativa * 3))
+          done
+          if [ "$SALVO" != sim ]; then
+            echo "❌ Não consegui salvar agora. Abra o pedido de novo pelo site." > "$RESPOSTA"
+          fi
+          gh issue comment "$ISSUE" --body-file "$RESPOSTA"
+          gh issue close "$ISSUE"
+
+  publicar:
+    needs: processar
+    if: always() && (needs.processar.result == 'success' || (github.event_name != 'issues' && needs.processar.result == 'skipped'))
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - id: deploy
+        uses: actions/deploy-pages@v4

@@ -2,8 +2,7 @@
   "name": "mapa-de-calor",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.13" },
   "scripts": {
-    "start": "node --disable-warning=ExperimentalWarning server.js"
+    "dev": "python3 -m http.server 8000 --directory public"
   }
 }

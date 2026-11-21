@@ -27,8 +27,6 @@ h1 { margin: 0; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
 h2 { margin: 0; font-size: 1.15rem; font-weight: 600; }
 .sub { margin: 0.2rem 0 0; color: var(--texto-2); }
 
-.topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-.conta { display: flex; gap: 1rem; align-items: center; color: var(--texto-2); white-space: nowrap; padding-top: 0.3rem; }
 
 input, textarea {
   font: inherit;
@@ -53,7 +51,6 @@ input[type="range"] { padding: 0; border: none; accent-color: var(--acento); }
   cursor: pointer;
 }
 .btn:hover { opacity: 0.85; }
-.btn.cheio { width: 100%; }
 
 .link {
   font: inherit;
@@ -84,7 +81,6 @@ input[type="range"] { padding: 0; border: none; accent-color: var(--acento); }
 
 /* Adicionar */
 .adicionar { display: flex; gap: 0.5rem; align-items: flex-start; }
-.adicionar[hidden] { display: none; }
 .adicionar textarea { flex: 1; resize: vertical; min-height: 2.6rem; max-height: 12rem; }
 .aviso { margin: 0; color: var(--texto-2); }
 
@@ -192,7 +188,6 @@ input[type="range"] { padding: 0; border: none; accent-color: var(--acento); }
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
   color: var(--texto);
 }
-.dialogo.estreito { width: min(340px, 94vw); }
 .dialogo::backdrop { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(2px); }
 .info { margin: 0.2rem 0 0; color: var(--texto-2); font-size: 0.85rem; }
 .sliders { display: grid; gap: 0.35rem; margin: 1rem 0; }
@@ -207,10 +202,6 @@ input[type="range"] { padding: 0; border: none; accent-color: var(--acento); }
 .resumo { margin: 0; color: var(--texto-2); }
 .acoes { display: flex; gap: 1rem; align-items: center; margin-top: 1.25rem; }
 .espaco { flex: 1; }
-.campos { display: grid; gap: 0.5rem; margin: 1rem 0; }
-.campos input[hidden] { display: none; }
-.erro { color: #dc2626; font-size: 0.85rem; margin: -0.25rem 0 0.75rem; }
-.trocar { margin: 1rem 0 0; text-align: center; color: var(--texto-2); font-size: 0.9rem; }
 
 @media (max-width: 600px) {
   .ranking li { grid-template-columns: 2rem 1fr 3.5rem; }
