@@ -1,82 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern E-commerce</title>
-    <link rel="stylesheet" href="index.css" />
+    <title>Mapa de Calor dos Indivíduos</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="container" id="mainContent">
-      <header>
-        <h1>Produtos</h1>
-      </header>
-
-      <div class="product-grid" id="productGrid">
-        <!-- Products will be inserted here by JavaScript -->
+    <header class="topo">
+      <div>
+        <h1>🌡️ Mapa de Calor dos Indivíduos</h1>
+        <p class="sub">Do ❄️ amigável e civilizado ao 🔥 tóxico e fedorento. O que não é classificado é neutro.</p>
       </div>
-    </div>
+      <div class="acoes-topo">
+        <button id="btn-exportar" class="btn ghost" title="Baixar os dados em JSON">⬇️ Exportar</button>
+        <label class="btn ghost" title="Carregar um JSON exportado">
+          ⬆️ Importar <input id="input-importar" type="file" accept="application/json" hidden />
+        </label>
+        <button id="btn-resetar" class="btn ghost perigo" title="Apagar tudo e voltar ao padrão">🗑️ Resetar</button>
+      </div>
+    </header>
 
-    <div id="logPanel" class="log-panel">
-      <h3>Operation Logs</h3>
-      <div id="logContent"></div>
-    </div>
+    <main class="layout">
+      <aside class="painel">
+        <section class="card">
+          <h2>Novo indivíduo</h2>
+          <form id="form-pessoa" class="form-linha">
+            <input id="pessoa-emoji" class="emoji-input" maxlength="4" placeholder="🙂" aria-label="Emoji" />
+            <input id="pessoa-nome" placeholder="Nome do indivíduo" required aria-label="Nome" />
+            <button class="btn" type="submit">Adicionar</button>
+          </form>
+        </section>
 
-    <button onclick="addUser()">ADICIONAR USUARIO PADRAO</button><br>
-    <button onclick="getAllCarts()">LISTAR TODOS OS CARRINHOS</button><br>
+        <section class="card">
+          <h2>Categorias</h2>
+          <p class="dica">A temperatura define onde a categoria fica no gradiente: −100 é gelado/amigável, 0 é neutro, +100 é fervendo/nojento.</p>
+          <ul id="lista-categorias" class="lista-categorias"></ul>
+          <form id="form-categoria" class="form-categoria">
+            <div class="form-linha">
+              <input id="cat-emoji" class="emoji-input" maxlength="4" placeholder="🏷️" aria-label="Emoji da categoria" />
+              <input id="cat-nome" placeholder="Nova categoria" required aria-label="Nome da categoria" />
+            </div>
+            <div class="form-linha">
+              <input id="cat-temp" type="range" min="-100" max="100" step="5" value="0" aria-label="Temperatura" />
+              <span id="cat-temp-preview" class="pill">0</span>
+              <button class="btn" type="submit">Criar</button>
+            </div>
+          </form>
+        </section>
 
-    <!-- Campo para o ID do Usuário -->
-    <label for="userIdInput">ID do Usuário:</label>
-    <input type="text" id="userIdInput" placeholder="Digite o ID do usuário">
-    <button onclick="getUserCartFromInput()">COLETAR DADOS DO USUÁRIO ESPECÍFICO</button><br>
+        <section class="card">
+          <h2>Como usar</h2>
+          <ul class="dica lista-dica">
+            <li><b>Clique</b> numa célula: +1 de intensidade (0 a 10).</li>
+            <li><b>Botão direito</b>: −1. <b>Shift + clique</b>: zera.</li>
+            <li>Clique no <b>nome</b> para editar tudo com sliders.</li>
+            <li>Pode entrar em quantas categorias quiser — a temperatura final é a média ponderada.</li>
+          </ul>
+        </section>
+      </aside>
 
-    <!-- Campo para o ID do Carrinho -->
-    <label for="cartIdInput">ID do Carrinho:</label>
-    <input type="text" id="cartIdInput" placeholder="Digite o ID do carrinho">
-    <button onclick="getCartTotalFromInput()">PEGAR TOTAL DE UM CARRINHO</button><br>
+      <section class="conteudo">
+        <section class="card">
+          <div class="card-cab">
+            <h2>Termômetro geral</h2>
+          </div>
+          <div id="termometro" class="termometro">
+            <div class="termometro-barra"></div>
+            <div id="termometro-marcadores" class="termometro-marcadores"></div>
+          </div>
+          <div class="legenda">
+            <span>❄️ Gelado · amigável</span>
+            <span>😐 Neutro</span>
+            <span>Fervendo · nojento 🔥</span>
+          </div>
+        </section>
 
-    <!-- Campo para ID do Carrinho e Item para Atualizar Quantidade -->
-    <label for="updateCartInput">ID do Carrinho para Atualizar Quantidade:</label>
-    <input type="text" id="updateCartInput" placeholder="Digite o ID do carrinho">
-    <button onclick="atualizarQuantidadeCompraFromInput()">ATUALIZAR UM CARRINHO</button><br>
+        <section class="card">
+          <div class="card-cab">
+            <h2>Mapa de calor</h2>
+            <label class="ordenar">
+              Ordenar por
+              <select id="ordenacao">
+                <option value="quente">Mais quente primeiro</option>
+                <option value="frio">Mais frio primeiro</option>
+                <option value="nome">Nome</option>
+              </select>
+            </label>
+          </div>
+          <div id="vazio" class="vazio" hidden>
+            <p>Ninguém no mapa ainda.</p>
+            <button id="btn-exemplo" class="btn">Carregar exemplo</button>
+          </div>
+          <div class="tabela-wrap">
+            <table id="mapa" class="mapa"></table>
+          </div>
+        </section>
+      </section>
+    </main>
 
-    <button onclick="deleteEmptyCarts()">DELETAR CARRINHOS VAZIOS</button>
+    <dialog id="dialogo-pessoa" class="dialogo">
+      <form method="dialog" id="form-editar">
+        <h2>Editar indivíduo</h2>
+        <div class="form-linha">
+          <input id="editar-emoji" class="emoji-input" maxlength="4" aria-label="Emoji" />
+          <input id="editar-nome" required aria-label="Nome" />
+        </div>
+        <div id="editar-sliders" class="sliders"></div>
+        <div class="editar-resumo">
+          Temperatura: <span id="editar-temp" class="pill">0</span>
+        </div>
+        <div class="dialogo-acoes">
+          <button type="button" id="btn-excluir-pessoa" class="btn ghost perigo">Excluir</button>
+          <span class="espaco"></span>
+          <button type="button" id="btn-cancelar" class="btn ghost">Cancelar</button>
+          <button type="submit" value="salvar" class="btn">Salvar</button>
+        </div>
+      </form>
+    </dialog>
 
-    <!-- Importar o arquivo JavaScript -->
-    <script type="module" src="banco.js"></script>
-    <script>
-      // Função para pegar os dados do carrinho do usuário
-      function getUserCartFromInput() {
-        const userId = document.getElementById('userIdInput').value;
-        if (userId) {
-          getUserCart(userId);  // Passa o ID do usuário para a função
-        } else {
-          alert("Por favor, insira um ID de usuário válido.");
-        }
-      }
-
-      // Função para pegar o total do carrinho
-      function getCartTotalFromInput() {
-        const cartId = document.getElementById('cartIdInput').value;
-        if (cartId) {
-          getCartTotal(cartId);  // Passa o ID do carrinho para a função
-        } else {
-          alert("Por favor, insira um ID de carrinho válido.");
-        }
-      }
-
-      // Função para atualizar a quantidade de um item no carrinho
-      function atualizarQuantidadeCompraFromInput() {
-        const cartId = document.getElementById('updateCartInput').value;
-        const itemId = prompt("Digite o ID do item que deseja atualizar:");
-        const newQuantity = prompt("Digite a nova quantidade:");
-
-        if (cartId && itemId && newQuantity) {
-          atualizarQuantidadeCompra(cartId, itemId, newQuantity);  // Passa os valores para a função
-        } else {
-          alert("Por favor, insira todos os dados necessários.");
-        }
-      }
-    </script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
