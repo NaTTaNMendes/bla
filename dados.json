@@ -1,5 +1,76 @@
 {
   "repositorio": "NaTTaNMendes/bla",
-  "pessoas": [],
+  "pessoas": [
+    {
+      "id": "14f4b5d9",
+      "nome": "Guigo",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "991aaf8a",
+      "nome": "Krieger",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "516af59a",
+      "nome": "Cesar",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "d303d941",
+      "nome": "Alisson",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "85f42776",
+      "nome": "Ítalo",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "39b34d16",
+      "nome": "Bene",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "374b2d1d",
+      "nome": "Nattan",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "b6f52bb7",
+      "nome": "Marcos",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "09be811b",
+      "nome": "Venske",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "119a3ff7",
+      "nome": "Johann Careca",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "14dc3b62",
+      "nome": "Johann",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "8bcda882",
+      "nome": "Ariel",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "0280bd1a",
+      "nome": "Mark",
+      "criadoPor": "NaTTaNMendes"
+    },
+    {
+      "id": "4f6dc2f6",
+      "nome": "Burgonovo",
+      "criadoPor": "NaTTaNMendes"
+    }
+  ],
   "votos": {}
 }
