@@ -148,7 +148,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--acento); box-sh
 .mapa td.cel.zero { background: var(--fundo-2); }
 .mapa td.total { min-width: 3.6rem; font-size: 0.9rem; }
 .mapa td.total.sem-voto { background: var(--fundo-2); color: #a1a1aa; font-weight: 400; }
-.mapa td.votos { text-align: center; color: var(--texto-2); font-size: 0.78rem; min-width: 2.5rem; }
 
 .vazio { color: var(--texto-2); text-align: center; padding: 2rem 0; margin: 0; }
 .dica { margin: 0.5rem 0 0; color: var(--texto-2); font-size: 0.78rem; }
@@ -198,7 +197,6 @@ input:focus, textarea:focus { outline: none; border-color: var(--acento); box-sh
 .posicao { text-align: center; color: var(--texto-2); font-variant-numeric: tabular-nums; font-size: 0.9rem; }
 .ranking li:nth-child(-n + 3) .posicao { font-size: 1.3rem; }
 .rank-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 550; }
-.rank-nome small { display: block; color: var(--texto-2); font-weight: 400; font-size: 0.75rem; }
 /* barra divergente: centro = neutro, esquerda = frio, direita = quente */
 .rank-trilho { position: relative; height: 10px; background: var(--fundo-2); border-radius: 5px; }
 .rank-trilho::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #d4d4d8; }
@@ -291,7 +289,6 @@ input.eixo::-moz-range-thumb {
   .mapa td.cel { min-width: 2.1rem; height: 2.4rem; font-size: 0.78rem; }
   .mapa td.total { min-width: 3.1rem; }
   .mapa td.nome { max-width: 7.5rem; }
-  .mapa .col-votos { display: none; }
   .mapa th .eixo-nome { display: none; }
   .mapa th .polos { font-size: 0.85rem; }
   .filtros, .lados { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -1rem; padding: 0 1rem 0.25rem; }

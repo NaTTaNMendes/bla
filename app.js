@@ -135,8 +135,7 @@ function avisar(msg, erro = false) {
 const visiveis = () => (busca ? pessoas.filter((p) => normalizar(p.nome).includes(busca)) : pessoas);
 
 function render() {
-  const votos = pessoas.reduce((n, p) => n + p.votantes, 0);
-  $('#estatisticas').textContent = `${plural(pessoas.length, 'indivíduo', 'indivíduos')} · ${plural(votos, 'voto', 'votos')}`;
+  $('#estatisticas').textContent = plural(pessoas.length, 'indivíduo', 'indivíduos');
   for (const b of document.querySelectorAll('.aba')) b.classList.toggle('ativa', b.dataset.aba === aba);
   $('#aba-mapa').hidden = aba !== 'mapa';
   $('#aba-ranking').hidden = aba !== 'ranking';
@@ -181,7 +180,6 @@ function renderMapa() {
         el('span', { class: 'eixo-nome', textContent: c.eixo }),
       );
     }),
-    el('th', { class: 'col-votos', textContent: 'Votos' }),
   );
 
   const linhas = lista.map((p) => {
@@ -203,7 +201,6 @@ function renderMapa() {
         pintar(td, calorDaNota(c, v));
         return td;
       }),
-      el('td', { class: 'votos col-votos', textContent: p.votantes }),
     );
   });
 
@@ -278,7 +275,7 @@ function renderRanking() {
         'li',
         { onclick: () => abrirVoto(p.id) },
         el('span', { class: 'posicao', textContent: medalhas[i] || `${i + 1}º` }),
-        el('span', { class: 'rank-nome' }, p.nome, el('small', { textContent: plural(p.votantes, 'voto', 'votos') })),
+        el('span', { class: 'rank-nome', textContent: p.nome }),
         el('span', { class: 'rank-trilho' }, barra),
         pill,
       );
@@ -299,7 +296,7 @@ function abrirVoto(id) {
   rascunho = { ...votando.meuVoto };
   $('#voto-nome').textContent = votando.nome;
   $('#voto-info').textContent = votando.votantes
-    ? `Média de ${plural(votando.votantes, 'voto', 'votos')}: ${fmt(votando.t)}° · ${rotulo(votando.t)}`
+    ? `Média do grupo: ${fmt(votando.t)}° · ${rotulo(votando.t)}`
     : 'Ninguém votou ainda. Seja o primeiro!';
   $('#btn-remover').hidden = votando.criador !== eu;
 
