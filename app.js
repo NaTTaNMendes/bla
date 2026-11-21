@@ -7,7 +7,7 @@ const MAX = 10; // intensidade máxima por categoria
 const CATEGORIAS_PADRAO = [
   { id: 'amigavel', nome: 'Amigável', emoji: '😊', temp: -100 },
   { id: 'civilizado', nome: 'Civilizado', emoji: '🎩', temp: -65 },
-  { id: 'mercador', nome: 'Mercador / Negociador', emoji: '🤝', temp: -15 },
+  { id: 'mercador', nome: 'Mercador', emoji: '🤝', temp: -15 },
   { id: 'neutro', nome: 'Neutro', emoji: '😐', temp: 0 },
   { id: 'competitivo', nome: 'Competitivo', emoji: '🏆', temp: 25 },
   { id: 'chatice', nome: 'Chatice', emoji: '🙄', temp: 55 },
@@ -16,29 +16,18 @@ const CATEGORIAS_PADRAO = [
 ];
 
 const EXEMPLO = [
-  { nome: 'Fulano', emoji: '🧔', notas: { fedor: 8, chatice: 5, competitivo: 3 } },
-  { nome: 'Ciclano', emoji: '🧑‍💼', notas: { mercador: 9, civilizado: 6 } },
-  { nome: 'Beltrano', emoji: '😇', notas: { amigavel: 10, civilizado: 7 } },
-  { nome: 'Zé Ninguém', emoji: '🫥', notas: {} },
-  { nome: 'Tretinha', emoji: '😈', notas: { toxicidade: 9, competitivo: 8, chatice: 6 } },
-  { nome: 'Gente Fina', emoji: '🤗', notas: { amigavel: 7, competitivo: 4 } },
+  ['Fulano', { fedor: 8, chatice: 5, competitivo: 3 }],
+  ['Ciclano', { mercador: 9, civilizado: 6 }],
+  ['Beltrano', { amigavel: 10, civilizado: 7 }],
+  ['Zé Ninguém', {}],
+  ['Tretinha', { toxicidade: 9, competitivo: 8, chatice: 6 }],
+  ['Gente Fina', { amigavel: 7, competitivo: 4 }],
 ];
 
 // ---------- Estado ----------
 
 const novoId = () => Math.random().toString(36).slice(2, 10);
-
-function estadoInicial() {
-  return { categorias: structuredClone(CATEGORIAS_PADRAO), pessoas: [], ordenacao: 'quente' };
-}
-
-function carregar() {
-  try {
-    const bruto = JSON.parse(localStorage.getItem(CHAVE));
-    if (validar(bruto)) return bruto;
-  } catch {}
-  return estadoInicial();
-}
+const estadoInicial = () => ({ categorias: structuredClone(CATEGORIAS_PADRAO), pessoas: [], ordenacao: 'quente' });
 
 function validar(e) {
   return (
@@ -50,46 +39,38 @@ function validar(e) {
   );
 }
 
-let estado = carregar();
-
-function salvar() {
-  localStorage.setItem(CHAVE, JSON.stringify(estado));
+function carregar() {
+  try {
+    const salvo = JSON.parse(localStorage.getItem(CHAVE));
+    if (validar(salvo)) return { ordenacao: 'quente', ...salvo };
+  } catch {}
+  return estadoInicial();
 }
 
+let estado = carregar();
+
 function atualizar() {
-  salvar();
+  localStorage.setItem(CHAVE, JSON.stringify(estado));
   render();
 }
 
 // ---------- Cálculo ----------
 
 /**
- * Temperatura geral de um indivíduo.
- * Média das temperaturas das categorias, ponderada pela intensidade,
- * escalada pela maior intensidade (1 ponto de fedor ≠ 10 pontos de fedor).
- * Sem nenhuma classificação → 0 (neutro).
+ * Temperatura geral de um indivíduo: média das temperaturas das categorias,
+ * ponderada pela intensidade e escalada pela maior nota
+ * (1 ponto de fedor esquenta menos que 10). Sem classificação → 0 (neutro).
  */
 function temperatura(pessoa) {
-  let somaPeso = 0;
-  let somaTemp = 0;
-  let maior = 0;
+  let peso = 0, soma = 0, maior = 0;
   for (const c of estado.categorias) {
     const v = pessoa.notas[c.id] || 0;
     if (!v) continue;
-    somaPeso += v;
-    somaTemp += v * c.temp;
+    peso += v;
+    soma += v * c.temp;
     maior = Math.max(maior, v);
   }
-  if (!somaPeso) return 0;
-  return (somaTemp / somaPeso) * (maior / MAX);
-}
-
-function rotulo(temp) {
-  if (temp <= -60) return 'Gelado';
-  if (temp <= -20) return 'Frio';
-  if (temp < 20) return 'Neutro';
-  if (temp < 60) return 'Quente';
-  return 'Fervendo';
+  return peso ? (soma / peso) * (maior / MAX) : 0;
 }
 
 const fmt = (t) => (t > 0 ? '+' : '') + Math.round(t);
@@ -99,18 +80,17 @@ function pintar(el, temp) {
   el.style.color = textoSobre(temp);
 }
 
+const categoriasOrdenadas = () => [...estado.categorias].sort((a, b) => a.temp - b.temp);
+
 function pessoasOrdenadas() {
   const lista = estado.pessoas.map((p) => ({ p, t: temperatura(p) }));
-  const ord = estado.ordenacao;
-  if (ord === 'nome') lista.sort((a, b) => a.p.nome.localeCompare(b.p.nome, 'pt-BR'));
-  else if (ord === 'frio') lista.sort((a, b) => a.t - b.t);
+  if (estado.ordenacao === 'nome') lista.sort((a, b) => a.p.nome.localeCompare(b.p.nome, 'pt-BR'));
+  else if (estado.ordenacao === 'frio') lista.sort((a, b) => a.t - b.t);
   else lista.sort((a, b) => b.t - a.t);
   return lista;
 }
 
-const categoriasOrdenadas = () => [...estado.categorias].sort((a, b) => a.temp - b.temp);
-
-// ---------- Helpers DOM ----------
+// ---------- DOM ----------
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -120,153 +100,129 @@ function el(tag, props = {}, ...filhos) {
     if (k === 'class') e.className = v;
     else if (k === 'dataset') Object.assign(e.dataset, v);
     else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (k.includes('-')) e.setAttribute(k, v);
     else e[k] = v;
   }
   e.append(...filhos.filter((f) => f != null));
   return e;
 }
 
-// ---------- Render ----------
-
 function render() {
-  renderCategorias();
   renderMapa();
-  renderTermometro();
-  $('#ordenacao').value = estado.ordenacao;
-}
-
-function renderCategorias() {
-  const ul = $('#lista-categorias');
-  ul.replaceChildren(
-    ...categoriasOrdenadas().map((c) => {
-      const pill = el('span', { class: 'pill', textContent: fmt(c.temp) });
-      pintar(pill, c.temp);
-      const slider = el('input', {
-        type: 'range',
-        min: -100,
-        max: 100,
-        step: 5,
-        value: c.temp,
-        title: 'Temperatura da categoria',
-        oninput: (ev) => {
-          c.temp = Number(ev.target.value);
-          pill.textContent = fmt(c.temp);
-          pintar(pill, c.temp);
-        },
-        onchange: atualizar,
-      });
-      const remover = el('button', {
-        class: 'btn-icone',
-        textContent: '✕',
-        title: `Remover "${c.nome}"`,
-        onclick: () => removerCategoria(c.id),
-      });
-      return el(
-        'li',
-        {},
-        el('span', { textContent: c.emoji || '🏷️' }),
-        el('span', { class: 'cat-nome', textContent: c.nome, title: c.nome }),
-        slider,
-        pill,
-        remover,
-      );
-    }),
-  );
+  renderCategorias();
 }
 
 function renderMapa() {
   const tabela = $('#mapa');
   const cats = categoriasOrdenadas();
   const lista = pessoasOrdenadas();
+  const vazio = lista.length === 0;
 
-  $('#vazio').hidden = lista.length > 0;
-  tabela.hidden = lista.length === 0;
-  if (!lista.length) return tabela.replaceChildren();
+  $('#vazio').hidden = !vazio;
+  $('#dica').hidden = vazio;
+  tabela.hidden = vazio;
+  if (vazio) return tabela.replaceChildren();
 
+  const seta = (ord) => (estado.ordenacao === ord ? ' ↓' : '');
   const cab = el(
     'tr',
     {},
-    el('th', { class: 'col-nome', textContent: 'Indivíduo' }),
-    ...cats.map((c) => {
-      const barra = el('span', { class: 'cat-temp' });
-      barra.style.background = corDaTemperatura(c.temp);
-      return el(
-        'th',
-        { title: `${c.nome} (${fmt(c.temp)}°)` },
-        el('span', { class: 'cat-emoji', textContent: c.emoji || '🏷️' }),
-        c.nome,
-        barra,
-      );
+    el('th', {
+      class: 'nome ordenavel',
+      textContent: `${lista.length} ${lista.length === 1 ? 'indivíduo' : 'indivíduos'}${seta('nome')}`,
+      title: 'Ordenar por nome',
+      onclick: () => ordenar('nome'),
     }),
-    el('th', { class: 'col-total', textContent: '🌡️ Temperatura' }),
+    ...cats.map((c) =>
+      el('th', { title: `${c.nome} (${fmt(c.temp)})` }, c.emoji ? el('span', { class: 'emoji', textContent: c.emoji }) : null, c.nome),
+    ),
+    el('th', {
+      class: 'ordenavel',
+      textContent: `Temperatura${estado.ordenacao === 'frio' ? ' ↑' : seta('quente')}`,
+      title: 'Alternar entre mais quente e mais frio primeiro',
+      onclick: () => ordenar(estado.ordenacao === 'quente' ? 'frio' : 'quente'),
+    }),
   );
 
-  const linhas = lista.map(({ p, t }) =>
-    el(
+  const linhas = lista.map(({ p, t }) => {
+    const total = el('td', { class: 'total', textContent: fmt(t) });
+    pintar(total, t);
+    return el(
       'tr',
       {},
-      el('td', {
-        class: 'col-nome',
-        textContent: `${p.emoji || '🙂'} ${p.nome}`,
-        title: 'Clique para editar',
-        onclick: () => abrirEdicao(p.id),
-      }),
+      el('td', { class: 'nome', textContent: p.nome, title: 'Editar', onclick: () => abrirEdicao(p.id) }),
       ...cats.map((c) => {
         const v = p.notas[c.id] || 0;
         const td = el('td', {
-          class: 'cel' + (v ? '' : ' zero'),
-          textContent: v || '·',
-          title: `${p.nome} · ${c.nome}: ${v}/${MAX}`,
+          class: v ? 'cel' : 'cel zero',
+          textContent: v || '',
+          title: `${p.nome} · ${c.nome}: ${v}`,
           dataset: { pessoa: p.id, cat: c.id },
         });
-        pintar(td, (c.temp * v) / MAX);
-        if (!v) td.style.color = '';
+        if (v) pintar(td, (c.temp * v) / MAX);
         return td;
       }),
-      (() => {
-        const td = el('td', { class: 'cel-total' }, `${fmt(t)}°`, el('small', { textContent: rotulo(t) }));
-        pintar(td, t);
-        return td;
-      })(),
-    ),
-  );
+      total,
+    );
+  });
 
   tabela.replaceChildren(el('thead', {}, cab), el('tbody', {}, ...linhas));
 }
 
-function renderTermometro() {
-  $('.termometro-barra').style.background = gradienteCss();
-  const caixa = $('#termometro-marcadores');
-  const lista = estado.pessoas.map((p) => ({ p, t: temperatura(p) })).sort((a, b) => a.t - b.t);
-
-  // Empilha marcadores que ficariam sobrepostos em "faixas".
-  const LARG = 9; // largura aproximada de um marcador, em % da barra
-  const ultimaPorFaixa = [];
-  const marcadores = lista.map(({ p, t }) => {
-    const pos = (t + 100) / 2;
-    let faixa = ultimaPorFaixa.findIndex((ult) => pos - ult >= LARG);
-    if (faixa === -1) faixa = ultimaPorFaixa.length;
-    ultimaPorFaixa[faixa] = pos;
-
-    const bolha = el('span', { class: 'bolha', textContent: `${p.emoji || '🙂'} ${p.nome}` });
-    pintar(bolha, t);
-    const m = el('div', { class: 'marcador', title: `${p.nome}: ${fmt(t)}° (${rotulo(t)})`, onclick: () => abrirEdicao(p.id) }, bolha);
-    m.style.left = `${pos}%`;
-    m.style.top = `${faixa * 30}px`;
-    return m;
-  });
-
-  caixa.style.height = `${Math.max(1, ultimaPorFaixa.length) * 30 + 10}px`;
-  caixa.replaceChildren(...marcadores);
+function renderCategorias() {
+  $('#lista-categorias').replaceChildren(
+    ...categoriasOrdenadas().map((c) => {
+      const valor = el('span', { class: 'temp', textContent: fmt(c.temp) });
+      pintar(valor, c.temp);
+      return el(
+        'li',
+        {},
+        el('span', { textContent: `${c.emoji ? c.emoji + ' ' : ''}${c.nome}` }),
+        el('input', {
+          type: 'range',
+          min: -100,
+          max: 100,
+          step: 5,
+          value: c.temp,
+          'aria-label': `Temperatura de ${c.nome}`,
+          oninput: (ev) => {
+            c.temp = Number(ev.target.value);
+            valor.textContent = fmt(c.temp);
+            pintar(valor, c.temp);
+          },
+          onchange: atualizar,
+        }),
+        valor,
+        el('button', { class: 'link perigo remover', textContent: 'remover', onclick: () => removerCategoria(c.id) }),
+      );
+    }),
+  );
 }
 
 // ---------- Ações ----------
 
+function ordenar(ord) {
+  estado.ordenacao = ord;
+  atualizar();
+}
+
+/** Adiciona vários nomes de uma vez (vírgula, ponto e vírgula ou quebra de linha). Ignora repetidos. */
+function adicionarPessoas(texto) {
+  const existentes = new Set(estado.pessoas.map((p) => p.nome.toLowerCase()));
+  let novos = 0;
+  for (const nome of texto.split(/[,;\n]+/).map((s) => s.trim()).filter(Boolean)) {
+    if (existentes.has(nome.toLowerCase())) continue;
+    existentes.add(nome.toLowerCase());
+    estado.pessoas.push({ id: novoId(), nome, notas: {} });
+    novos++;
+  }
+  if (novos) atualizar();
+}
+
 function ajustarNota(pessoaId, catId, delta, zerar = false) {
   const p = estado.pessoas.find((x) => x.id === pessoaId);
   if (!p) return;
-  const atual = p.notas[catId] || 0;
-  const nova = zerar ? 0 : Math.max(0, Math.min(MAX, atual + delta));
+  const nova = zerar ? 0 : Math.max(0, Math.min(MAX, (p.notas[catId] || 0) + delta));
   if (nova) p.notas[catId] = nova;
   else delete p.notas[catId];
   atualizar();
@@ -275,119 +231,98 @@ function ajustarNota(pessoaId, catId, delta, zerar = false) {
 function removerCategoria(id) {
   if (estado.categorias.length <= 1) return alert('Precisa ter pelo menos uma categoria.');
   const c = estado.categorias.find((x) => x.id === id);
-  if (!confirm(`Remover a categoria "${c.nome}"? As notas dela serão apagadas.`)) return;
+  if (!confirm(`Remover "${c.nome}"? As notas dessa categoria serão apagadas.`)) return;
   estado.categorias = estado.categorias.filter((x) => x.id !== id);
   for (const p of estado.pessoas) delete p.notas[id];
   atualizar();
 }
 
-// ---------- Diálogo de edição ----------
+// ---------- Edição ----------
 
-const dialogo = $('#dialogo-pessoa');
-let editandoId = null;
+const dialogo = $('#dialogo');
+let editando = null;
 let rascunho = null;
 
 function abrirEdicao(id) {
-  const p = estado.pessoas.find((x) => x.id === id);
-  if (!p) return;
-  editandoId = id;
-  rascunho = { ...p, notas: { ...p.notas } };
-  $('#editar-nome').value = p.nome;
-  $('#editar-emoji').value = p.emoji || '';
+  editando = estado.pessoas.find((x) => x.id === id);
+  if (!editando) return;
+  rascunho = { ...editando.notas };
+  $('#editar-nome').value = editando.nome;
 
   $('#editar-sliders').replaceChildren(
     ...categoriasOrdenadas().map((c) => {
       const saida = el('output');
-      const atualizarSaida = () => {
-        const v = rascunho.notas[c.id] || 0;
+      const mostrar = () => {
+        const v = rascunho[c.id] || 0;
         saida.textContent = v;
-        pintar(saida, (c.temp * v) / MAX);
+        if (v) pintar(saida, (c.temp * v) / MAX);
+        else saida.removeAttribute('style');
       };
-      atualizarSaida();
-      const slider = el('input', {
-        type: 'range',
-        min: 0,
-        max: MAX,
-        step: 1,
-        value: rascunho.notas[c.id] || 0,
-        oninput: (ev) => {
-          const v = Number(ev.target.value);
-          if (v) rascunho.notas[c.id] = v;
-          else delete rascunho.notas[c.id];
-          atualizarSaida();
-          atualizarResumo();
-        },
-      });
+      mostrar();
       return el(
         'label',
-        { class: 'slider-linha' },
-        el('span', { textContent: c.emoji || '🏷️' }),
-        el('span', { textContent: c.nome }),
-        slider,
+        { class: 'slider' },
+        el('span', { textContent: `${c.emoji ? c.emoji + ' ' : ''}${c.nome}` }),
+        el('input', {
+          type: 'range',
+          min: 0,
+          max: MAX,
+          value: rascunho[c.id] || 0,
+          oninput: (ev) => {
+            const v = Number(ev.target.value);
+            if (v) rascunho[c.id] = v;
+            else delete rascunho[c.id];
+            mostrar();
+            mostrarResumo();
+          },
+        }),
         saida,
       );
     }),
   );
-  atualizarResumo();
+  mostrarResumo();
   dialogo.showModal();
 }
 
-function atualizarResumo() {
-  const t = temperatura(rascunho);
-  const pill = $('#editar-temp');
-  pill.textContent = `${fmt(t)}° · ${rotulo(t)}`;
-  pintar(pill, t);
+function mostrarResumo() {
+  const t = temperatura({ notas: rascunho });
+  const span = $('#editar-temp');
+  span.textContent = fmt(t);
+  pintar(span, t);
 }
 
 $('#form-editar').addEventListener('submit', () => {
-  const p = estado.pessoas.find((x) => x.id === editandoId);
-  if (!p) return;
-  p.nome = $('#editar-nome').value.trim() || p.nome;
-  p.emoji = $('#editar-emoji').value.trim();
-  p.notas = rascunho.notas;
+  editando.nome = $('#editar-nome').value.trim() || editando.nome;
+  editando.notas = rascunho;
   atualizar();
 });
-
 $('#btn-cancelar').addEventListener('click', () => dialogo.close());
-
-$('#btn-excluir-pessoa').addEventListener('click', () => {
-  const p = estado.pessoas.find((x) => x.id === editandoId);
-  if (!p || !confirm(`Excluir "${p.nome}" do mapa?`)) return;
-  estado.pessoas = estado.pessoas.filter((x) => x.id !== editandoId);
+$('#btn-excluir').addEventListener('click', () => {
+  if (!confirm(`Excluir "${editando.nome}"?`)) return;
+  estado.pessoas = estado.pessoas.filter((x) => x !== editando);
   dialogo.close();
   atualizar();
 });
 
 // ---------- Eventos ----------
 
-$('#form-pessoa').addEventListener('submit', (ev) => {
+const campoNomes = $('#nomes');
+$('#form-pessoas').addEventListener('submit', (ev) => {
   ev.preventDefault();
-  const nome = $('#pessoa-nome').value.trim();
-  if (!nome) return;
-  estado.pessoas.push({ id: novoId(), nome, emoji: $('#pessoa-emoji').value.trim(), notas: {} });
-  ev.target.reset();
-  $('#pessoa-nome').focus();
-  atualizar();
+  adicionarPessoas(campoNomes.value);
+  campoNomes.value = '';
+  campoNomes.rows = 1;
+  campoNomes.focus();
 });
-
-const catTemp = $('#cat-temp');
-const catPreview = $('#cat-temp-preview');
-function atualizarPreviewCategoria() {
-  const t = Number(catTemp.value);
-  catPreview.textContent = fmt(t);
-  pintar(catPreview, t);
-}
-catTemp.addEventListener('input', atualizarPreviewCategoria);
-atualizarPreviewCategoria();
-
-$('#form-categoria').addEventListener('submit', (ev) => {
-  ev.preventDefault();
-  const nome = $('#cat-nome').value.trim();
-  if (!nome) return;
-  estado.categorias.push({ id: novoId(), nome, emoji: $('#cat-emoji').value.trim(), temp: Number(catTemp.value) });
-  ev.target.reset();
-  atualizarPreviewCategoria();
-  atualizar();
+// Enter adiciona; Shift+Enter quebra linha. O campo cresce ao colar uma lista.
+campoNomes.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Enter' && !ev.shiftKey) {
+    ev.preventDefault();
+    $('#form-pessoas').requestSubmit();
+  }
+});
+campoNomes.addEventListener('input', () => {
+  campoNomes.rows = Math.min(8, campoNomes.value.split('\n').length);
 });
 
 // Clique: +1 · Botão direito: −1 · Shift+clique: zera
@@ -403,13 +338,27 @@ mapa.addEventListener('contextmenu', (ev) => {
   ajustarNota(td.dataset.pessoa, td.dataset.cat, -1);
 });
 
-$('#ordenacao').addEventListener('change', (ev) => {
-  estado.ordenacao = ev.target.value;
+const catTemp = $('#cat-temp');
+const catValor = $('#cat-temp-valor');
+const mostrarTempNova = () => {
+  catValor.textContent = fmt(Number(catTemp.value));
+  pintar(catValor, Number(catTemp.value));
+};
+catTemp.addEventListener('input', mostrarTempNova);
+mostrarTempNova();
+
+$('#form-categoria').addEventListener('submit', (ev) => {
+  ev.preventDefault();
+  const nome = $('#cat-nome').value.trim();
+  if (!nome) return;
+  estado.categorias.push({ id: novoId(), nome, temp: Number(catTemp.value) });
+  ev.target.reset();
+  mostrarTempNova();
   atualizar();
 });
 
 $('#btn-exemplo').addEventListener('click', () => {
-  for (const ex of EXEMPLO) estado.pessoas.push({ id: novoId(), ...structuredClone(ex) });
+  for (const [nome, notas] of EXEMPLO) estado.pessoas.push({ id: novoId(), nome, notas: { ...notas } });
   atualizar();
 });
 
@@ -440,4 +389,5 @@ $('#btn-resetar').addEventListener('click', () => {
   atualizar();
 });
 
+$('#barra').style.background = gradienteCss();
 render();
