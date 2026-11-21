@@ -600,6 +600,14 @@
         "mercador": -4,
         "civilizado": 7,
         "amigavel": 7
+      },
+      "2H5R1gGtA-axA6Bm": {
+        "amigavel": 8,
+        "civilizado": 8,
+        "mercador": 5,
+        "competitivo": 8,
+        "toxicidade": -8,
+        "fedor": -7
       }
     },
     "f37c69c9": {
@@ -689,7 +697,8 @@
   "relogio": {
     "lgonorjjTpYvveGt": 1795278648105,
     "m_kLE9s13LwxAqLi": 1795274648981,
-    "dUIclM5I0g4hp_kO": 1795278720974
+    "dUIclM5I0g4hp_kO": 1795278720974,
+    "2H5R1gGtA-axA6Bm": 1795289216738
   },
-  "ultimo": "KFx4Dw25j00t"
+  "ultimo": "y0qcRTIx77Yc"
 }
