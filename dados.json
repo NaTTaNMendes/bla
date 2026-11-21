@@ -174,9 +174,207 @@
       "id": "2a4a0343",
       "nome": "buma",
       "criador": null
+    },
+    {
+      "id": "guilherme",
+      "nome": "guilherme",
+      "criador": "lgonorjjTpYvveGt"
+    },
+    {
+      "id": "nato",
+      "nome": "nato",
+      "criador": "lgonorjjTpYvveGt"
+    },
+    {
+      "id": "luiz-gazola",
+      "nome": "luiz gazola",
+      "criador": "lgonorjjTpYvveGt"
     }
   ],
-  "votos": {},
-  "relogio": {},
-  "ultimo": null
+  "votos": {
+    "991aaf8a": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 6,
+        "civilizado": 4,
+        "fedor": 10,
+        "toxicidade": 7,
+        "chatice": 8,
+        "competitivo": 5,
+        "mercador": 1
+      }
+    },
+    "4f6dc2f6": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 5,
+        "competitivo": 4,
+        "chatice": 10,
+        "toxicidade": 8,
+        "fedor": 10,
+        "mercador": 2,
+        "civilizado": 3
+      }
+    },
+    "629dbcdb": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 5,
+        "civilizado": 6,
+        "mercador": 1,
+        "competitivo": 1,
+        "chatice": 10,
+        "toxicidade": 6
+      }
+    },
+    "0280bd1a": {
+      "lgonorjjTpYvveGt": {
+        "fedor": 2,
+        "chatice": 4,
+        "toxicidade": 9,
+        "civilizado": 7,
+        "amigavel": 9
+      }
+    },
+    "nato": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 2,
+        "civilizado": 4,
+        "competitivo": 6,
+        "chatice": 10,
+        "toxicidade": 10,
+        "fedor": 5
+      }
+    },
+    "guilherme": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 3,
+        "civilizado": 6,
+        "mercador": 6,
+        "competitivo": 10,
+        "chatice": 8,
+        "toxicidade": 10
+      }
+    },
+    "luiz-gazola": {
+      "lgonorjjTpYvveGt": {
+        "chatice": 10,
+        "fedor": 4,
+        "toxicidade": 7,
+        "competitivo": 8,
+        "mercador": 2,
+        "civilizado": 6,
+        "amigavel": 4
+      }
+    },
+    "016c7a36": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 6,
+        "civilizado": 10,
+        "mercador": 8,
+        "toxicidade": 2,
+        "competitivo": 10
+      }
+    },
+    "226bacde": {
+      "lgonorjjTpYvveGt": {
+        "chatice": 9,
+        "toxicidade": 7,
+        "fedor": 5,
+        "competitivo": 3,
+        "civilizado": 5,
+        "amigavel": 4
+      }
+    },
+    "eebbe458": {
+      "lgonorjjTpYvveGt": {
+        "toxicidade": 7,
+        "chatice": 8,
+        "competitivo": 9,
+        "civilizado": 6,
+        "amigavel": 4
+      }
+    },
+    "b6f52bb7": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 4,
+        "civilizado": 4,
+        "mercador": 5,
+        "competitivo": 8,
+        "chatice": 8,
+        "toxicidade": 9,
+        "fedor": 2
+      }
+    },
+    "39b34d16": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 7,
+        "civilizado": 8,
+        "mercador": 6,
+        "competitivo": 7,
+        "chatice": 6,
+        "toxicidade": 5
+      }
+    },
+    "65a16a8b": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 4,
+        "chatice": 8,
+        "toxicidade": 7,
+        "competitivo": 10,
+        "mercador": 2,
+        "civilizado": 6
+      }
+    },
+    "516af59a": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 7,
+        "civilizado": 8,
+        "competitivo": 8,
+        "chatice": 5,
+        "toxicidade": 9,
+        "mercador": 4
+      }
+    },
+    "d303d941": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 6,
+        "civilizado": 8,
+        "mercador": 8,
+        "competitivo": 6,
+        "chatice": 4,
+        "toxicidade": 4
+      }
+    },
+    "14f4b5d9": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 9,
+        "civilizado": 8,
+        "mercador": 5,
+        "competitivo": 6,
+        "chatice": 2,
+        "fedor": 3
+      }
+    },
+    "119a3ff7": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 5,
+        "civilizado": 7,
+        "mercador": 7,
+        "competitivo": 2,
+        "chatice": 4,
+        "fedor": 1
+      }
+    },
+    "9fbc163b": {
+      "lgonorjjTpYvveGt": {
+        "amigavel": 8,
+        "civilizado": 8,
+        "mercador": 6,
+        "competitivo": 2
+      }
+    },
+    "8c49a81b": {}
+  },
+  "relogio": {
+    "lgonorjjTpYvveGt": 1795272689189
+  },
+  "ultimo": "G8hrwQEnAQ7T"
 }
