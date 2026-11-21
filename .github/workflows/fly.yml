@@ -1,0 +1,42 @@
+name: Deploy no Fly.io
+
+on:
+  push:
+    branches: [master, ccr-74da180b-o0dswr]
+  workflow_dispatch:
+
+concurrency: deploy-fly
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar token
+        id: token
+        run: |
+          if [ -z "$FLY_API_TOKEN" ]; then
+            echo "::warning::Crie o segredo FLY_API_TOKEN no GitHub (Settings → Secrets and variables → Actions) para publicar."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+        if: steps.token.outputs.ok == 'true'
+
+      - name: Criar app e volume (só na primeira vez)
+        if: steps.token.outputs.ok == 'true'
+        run: |
+          APP=$(grep -m1 '^app' fly.toml | cut -d'"' -f2)
+          REGIAO=$(grep -m1 '^primary_region' fly.toml | cut -d'"' -f2)
+          flyctl status --app "$APP" > /dev/null 2>&1 || flyctl apps create "$APP"
+          flyctl volumes list --app "$APP" --json | grep -q '"dados"' \
+            || flyctl volumes create dados --app "$APP" --region "$REGIAO" --size 1 --yes
+
+      - name: Publicar
+        if: steps.token.outputs.ok == 'true'
+        run: flyctl deploy --remote-only --ha=false

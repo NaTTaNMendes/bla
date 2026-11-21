@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapa de Calor</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="pagina">
+      <header class="topo">
+        <div>
+          <h1>Mapa de Calor</h1>
+          <p class="sub">Do amigável ao fedorento. Quem não tem nenhuma classificação fica neutro.</p>
+        </div>
+        <div id="conta" class="conta"></div>
+      </header>
+
+      <nav class="abas">
+        <button class="aba ativa" data-aba="mapa">Mapa</button>
+        <button class="aba" data-aba="ranking">Ranking</button>
+      </nav>
+
+      <form id="form-pessoas" class="adicionar" hidden>
+        <textarea
+          id="nomes"
+          rows="1"
+          placeholder="Adicionar indivíduos — vários de uma vez, separados por vírgula ou um por linha"
+          aria-label="Nomes dos indivíduos"
+        ></textarea>
+        <button class="btn" type="submit">Adicionar</button>
+      </form>
+      <p id="convite-entrar" class="aviso" hidden>
+        <button class="link destaque" data-abrir-login>Entre ou crie uma conta</button> para adicionar indivíduos e votar.
+      </p>
+
+      <div class="legenda">
+        <span>Frio · amigável</span>
+        <div id="barra" class="barra"></div>
+        <span>Quente · nojento</span>
+      </div>
+
+      <section id="aba-mapa">
+        <p id="vazio" class="vazio" hidden>Ninguém no mapa ainda.</p>
+        <div class="tabela-wrap">
+          <table id="mapa" class="mapa"></table>
+        </div>
+        <p id="dica" class="dica">Cada célula é a média dos votos · clique numa linha para dar o seu voto</p>
+      </section>
+
+      <section id="aba-ranking" hidden>
+        <div id="filtros" class="filtros"></div>
+        <ol id="ranking" class="ranking"></ol>
+        <p id="ranking-vazio" class="vazio" hidden>Ninguém pontuou aqui ainda.</p>
+      </section>
+    </main>
+
+    <dialog id="dialogo-voto" class="dialogo">
+      <form method="dialog" id="form-voto">
+        <h2 id="voto-nome"></h2>
+        <p id="voto-info" class="info"></p>
+        <div id="voto-sliders" class="sliders"></div>
+        <p class="resumo">Seu voto <span id="voto-temp" class="temp">0</span></p>
+        <div class="acoes">
+          <button type="button" id="btn-remover" class="link perigo" hidden>Remover indivíduo</button>
+          <span class="espaco"></span>
+          <button type="button" class="link" data-fechar>Cancelar</button>
+          <button type="submit" class="btn">Salvar voto</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="dialogo-login" class="dialogo estreito">
+      <form id="form-login">
+        <h2 id="login-titulo">Entrar</h2>
+        <div class="campos">
+          <input id="login-usuario" placeholder="Usuário" autocomplete="username" required />
+          <input id="login-senha" type="password" placeholder="Senha" autocomplete="current-password" required />
+          <input id="login-convite" placeholder="Código de convite" hidden />
+        </div>
+        <p id="login-erro" class="erro" hidden></p>
+        <button type="submit" class="btn cheio" id="login-enviar">Entrar</button>
+        <p class="trocar">
+          <span id="login-pergunta">Não tem conta?</span>
+          <button type="button" class="link destaque" id="login-trocar">Criar conta</button>
+        </p>
+      </form>
+    </dialog>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

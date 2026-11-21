@@ -1,10 +1,16 @@
-# 🌡️ Mapa de Calor dos Indivíduos
+# 🌡️ Mapa de Calor
 
-Classifique indivíduos em categorias e veja todo mundo num mapa de calor que vai do
-**❄️ gelado (amigável, civilizado)** ao **🔥 fervendo (tóxico, fedorento)**.
-O que não é classificado é **neutro**.
+Mapa de calor colaborativo de indivíduos: cada um cria uma conta, vota e o mapa mostra
+a **média do grupo**, do **❄️ amigável** ao **🔥 fedorento**. Quem não tem nenhuma
+classificação fica neutro.
 
-## Categorias iniciais
+- **Mapa** — tabela pessoas × categorias com a média dos votos e a temperatura geral.
+- **Ranking** — mais quente, mais frio e o top de cada categoria.
+- **Contas** — usuário e senha. Sem conta dá pra ver; com conta dá pra adicionar
+  indivíduos (vários de uma vez, separados por vírgula ou um por linha) e votar.
+  Só quem adicionou um indivíduo pode removê-lo.
+
+## Categorias
 
 | Categoria | Temperatura |
 |---|---|
@@ -17,32 +23,44 @@ O que não é classificado é **neutro**.
 | ☢️ Toxicidade | +80 |
 | 🦨 Fedor | +100 |
 
-Dá pra mudar a temperatura de qualquer categoria, criar novas e remover.
+Ficam em `CATEGORIAS` no `server.js`.
 
-## Como funciona
+## Como a nota é calculada
 
-- Adicione **vários indivíduos de uma vez**: separe os nomes por vírgula ou cole uma lista (um por linha). Nomes repetidos são ignorados.
-- Cada indivíduo recebe uma intensidade de **0 a 10** em quantas categorias quiser.
-- A **temperatura geral** é a média das temperaturas das categorias, ponderada pela
-  intensidade e escalada pela maior nota (1 de fedor esquenta menos que 10 de fedor).
-- O gradiente é divergente (azul → cinza → vermelho), interpolado em OKLab pra ficar suave.
+- Cada pessoa vota de 0 a 10 em quantas categorias quiser.
+- A célula do mapa é a média entre quem votou naquele indivíduo.
+- A **temperatura** é a média das temperaturas das categorias, ponderada pelas notas e
+  escalada pela maior nota (1 de fedor esquenta menos que 10 de fedor).
 
-## Rodando
+## Rodando localmente
 
-É só HTML/CSS/JS puro, sem build. Sirva a pasta com qualquer servidor estático:
+Precisa do Node 22.13 ou mais novo. Não tem dependências.
 
 ```bash
-python3 -m http.server 8000
-# abra http://localhost:8000
+npm start
+# http://localhost:8080
 ```
 
-Os dados ficam salvos no `localStorage` do navegador. Use **Exportar/Importar** (no rodapé)
-pra compartilhar o mapa em JSON. As categorias podem ser editadas em **Categorias**, também no rodapé.
+O banco SQLite fica em `dados/mapa.db`.
 
-## Atalhos no mapa
+## Publicando no Fly.io
 
-- **Clique** numa célula: +1
-- **Botão direito**: −1
-- **Shift + clique**: zera
-- **Clique no nome**: abre o editor com sliders
-- **Clique em "Temperatura"** ou no total de indivíduos para mudar a ordenação
+O deploy é feito pelo GitHub Actions (`.github/workflows/fly.yml`) a cada push.
+
+1. Crie uma conta em [fly.io](https://fly.io) e gere um token em
+   **Account → Access Tokens**.
+2. No GitHub, em **Settings → Secrets and variables → Actions**, crie o segredo
+   `FLY_API_TOKEN` com esse token.
+3. Faça um push (ou rode o workflow em **Actions → Deploy no Fly.io → Run workflow**).
+
+Na primeira vez o workflow cria o app e o volume `dados` (onde fica o banco).
+O endereço fica `https://<app>.fly.dev`. Se o nome do app em `fly.toml` já
+estiver em uso por outra pessoa no Fly, troque por outro.
+
+### Código de convite (opcional)
+
+Para só quem tem o código conseguir criar conta:
+
+```bash
+fly secrets set CODIGO_CONVITE=algum-codigo --app mapa-de-calor-bla
+```
